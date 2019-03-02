@@ -82,11 +82,11 @@ def main():
     while True:
         _in = input('PyRDT TestPrep> ')
         if _in == '1':
-            reset_all_changes()
+            print(reset_all_changes())
         if _in == '2':
-            before_diff()
+            print(before_diff())
         if _in == '3':
-            before_second_diff()
+            print(before_second_diff())
         if _in == '4':
             return
 
