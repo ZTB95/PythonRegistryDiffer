@@ -44,13 +44,13 @@ A simple registry diffing tool &amp; library written in Python.
                    *hkcr : Exclude the HKEY_CLASSES_ROOT root key.
                    *hku  : Exclude the HKEY_USER root key.
                    *hkcu : Exclude the HKEY_CURRENT_USER root key.
-				
-				-v | --verbose 	: Print all errors to the screen as they occur.
-				
-				-q | --quiet 		: Suppress printing any information about non-fatal errors.
-				
-				-m | --memorymode   : Keeps the database in memory mode instead of saving it to the disk.
-				
-				-e | --empty		: Skips creating a baseline image when calling new-database.
-				
-				-r | --remote       : Attempts to connect to a remote machine and get images from its registry.
+
+                -v | --verbose 	: Print all errors to the screen as they occur.
+                
+                -q | --quiet 		: Suppress printing any information about non-fatal errors.
+                
+                -m | --memorymode   : Keeps the database in memory mode instead of saving it to the disk.
+                
+                -e | --empty		: Skips creating a baseline image when calling new-database.
+                
+                -r | --remote       : Attempts to connect to a remote machine and get images from its registry.
