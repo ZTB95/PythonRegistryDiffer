@@ -8,7 +8,7 @@ A simple registry diffing tool &amp; library written in Python.
 
                 new-image   : Creates a new comparison image. It will only check the HKEYs that the first image was 
                              created with. Note: You don't need to call this option to create the first image; new-db creates
-                             a baseline image.
+                             a baseline image unless called with the -e option.
 
                 list-images : Lists the number of current images in the db and some cursory details.
 
@@ -28,11 +28,11 @@ A simple registry diffing tool &amp; library written in Python.
                               *-f filename
                               *Not using -f will save to the existing save file
 
-                help        : Show this help information
+                -h | help        : Show this help information
 
         OPTIONS:
 
-                -f --file <filename> : The database or report file to use/save as/load from
+                -f | --file <filename> : The database or report file to use/save as/load from
                               IE:
                               "PythonRegistryDiffer> load-db -f C:\Work\Registry_set.db"
                               "PythonRegistryDiffer> save-db -f file_in_current_dir.db"
@@ -45,9 +45,10 @@ A simple registry diffing tool &amp; library written in Python.
                    *hku  : Exclude the HKEY_USER root key.
                    *hkcu : Exclude the HKEY_CURRENT_USER root key.
 				
-				-v --verbose 	: Print all errors to the screen as they occur.
+				-v | --verbose 	: Print all errors to the screen as they occur.
 				
-				-q --quiet 		: Suppress printing any information about non-fatal errors.
+				-q | --quiet 		: Suppress printing any information about non-fatal errors.
 				
-				-m --memorymode : Keeps the database in memory mode instead of saving it to the disk.
+				-m | --memorymode : Keeps the database in memory mode instead of saving it to the disk.
 				
+				-e | --empty		: Skips creating a baseline image when calling new-database.
