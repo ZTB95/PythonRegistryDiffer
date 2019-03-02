@@ -1,9 +1,10 @@
-from platform import system
-from PythonRegistryDiffer import user_functions
+from platform import system, release
+import PythonRegistryDiffer.user_functions as exec
 
 
 def get_command():
-    pass
+    exec.prd_help()
+    return False
 
 
 def main():
@@ -16,6 +17,6 @@ def main():
 
 if __name__ == '__main__':
     if 'windows' not in system().lower():
-        print('This program must be run on a windows host.')
+        print('This program must be run on a Windows host. Detected \'{} {}\'. Quitting...'.format(system(), release()))
     else:
         main()

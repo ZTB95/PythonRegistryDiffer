@@ -49,6 +49,8 @@ A simple registry diffing tool &amp; library written in Python.
 				
 				-q | --quiet 		: Suppress printing any information about non-fatal errors.
 				
-				-m | --memorymode : Keeps the database in memory mode instead of saving it to the disk.
+				-m | --memorymode   : Keeps the database in memory mode instead of saving it to the disk.
 				
 				-e | --empty		: Skips creating a baseline image when calling new-database.
+				
+				-r | --remote       : Attempts to connect to a remote machine and get images from its registry.
