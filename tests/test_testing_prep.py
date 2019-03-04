@@ -1,5 +1,5 @@
 import unittest
-import PythonRegistryDiffer.testing_prep as tp
+import tests.testing_prep as tp
 
 
 class TestTestingPrep(unittest.TestCase):
