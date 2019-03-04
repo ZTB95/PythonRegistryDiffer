@@ -1,5 +1,9 @@
 
 
+def validate_arguments():
+    pass
+
+
 def new_database():
     pass
 
