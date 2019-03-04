@@ -11,11 +11,13 @@ class RegistryObject:
         self.database_id = 0
 
         if len(kwargs) > 1:
-            self._create_from_database(kwargs)
+            self._create_from_database(**kwargs)
         elif len(kwargs) == 1:
-            self._generate_new(kwargs)
+            self._create_new(**kwargs)
+        elif len(kwargs) <= 0:
+            raise KeyError
 
-    def _generate_new(self, **kwargs):
+    def _create_new(self, **kwargs):
         raise NotImplementedError
 
     def _create_from_database(self, **kwargs):
