@@ -8,7 +8,7 @@ class RegistryObject:
         in the registry to create. See implementations for more details on their specific argument needs.
         :param kwargs: The dictionary of arguments.
         """
-        self.database_id = 0
+        self._database_id = 0
 
         if len(kwargs) > 1:
             self._create_from_database(**kwargs)
@@ -23,3 +23,10 @@ class RegistryObject:
     def _create_from_database(self, **kwargs):
         raise NotImplementedError
 
+    @property
+    def dbid(self):
+        return self._database_id
+
+    @dbid.setter
+    def dbid(self, new_id):
+        self._database_id = new_id

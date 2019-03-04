@@ -4,15 +4,21 @@ import PythonRegistryDiffer.RegistryObject as RegistryObject
 
 class Key(RegistryObject):
     def __init__(self):
-        self._key_path = str
-        self._value_list = []
-        self._windows_time = int
+        # inherited dbid
+        self._key_path = str  # key_path
+        self._value_list = []  # values
+        self._windows_time = int  # modified
+        self._name = str  # name
 
     def _create_new(self, **kwargs):
         pass
 
     def _create_from_database(self, **kwargs):
-        pass
+        self.dbid = int(kwargs.get('dbid'))
+        self.key_path = str(kwargs.get('key_path'))
+        self.values = list(kwargs.get('values'))
+        self.modified = int(kwargs.get('modified'))
+        self.name = str(kwargs.get('name'))
 
     @property
     def key_path(self):
@@ -44,3 +50,11 @@ class Key(RegistryObject):
             return True
         else:
             return False
+
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, new_name):
+        self._name = new_name
