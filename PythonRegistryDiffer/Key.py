@@ -1,24 +1,29 @@
-import winreg as wr
 import PythonRegistryDiffer.RegistryObject as RegistryObject
 
 
 class Key(RegistryObject):
-    def __init__(self):
-        # inherited dbid
+    def __init__(self, **kwargs):
+        """
+        Creates a new Key object.
+        :param kwargs: required: dbid, key_path, values, modified, name. A dbid of 0 indicates that the key is not in a
+        database.
+        """
         self._key_path = str  # key_path
         self._value_list = []  # values
         self._windows_time = int  # modified
         self._name = str  # name
-
-    def _create_new(self, **kwargs):
-        pass
-
-    def _create_from_database(self, **kwargs):
+        # self.has_values is derived from self.values' length
         self.dbid = int(kwargs.get('dbid'))
         self.key_path = str(kwargs.get('key_path'))
         self.values = list(kwargs.get('values'))
         self.modified = int(kwargs.get('modified'))
         self.name = str(kwargs.get('name'))
+
+    def __eq__(self, other):
+        return self.name == other.name and \
+               self.key_path == other.key_path and \
+               self.modified == other.modified and \
+               self.values == other.values
 
     @property
     def key_path(self):
