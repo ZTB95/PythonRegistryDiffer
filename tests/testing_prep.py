@@ -70,7 +70,7 @@ def create_key_with_value(key_name, key, value):
 
 
 def main():
-    """Processes user input if this module in a loop. Quits when the user exits.
+    """Processes user input. Quits when the user exits.
 
     :return: None
     """
