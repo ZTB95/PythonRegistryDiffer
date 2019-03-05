@@ -2,13 +2,13 @@ class RegistryObject:
     """
     Base class for all objects that directly map to Windows registry objects.
     """
-    def __init__(self):
+    def __init__(self, **kwargs):
         """
-        Creates a new instance from either 1) passed in parameters or 2) a single argument that represents which object
-        in the registry to create. See implementations for more details on their specific argument needs.
+        Creates a new instance from passed in parameters. See implementations for more details on their specific
+        argument requirements.
         :param kwargs: The dictionary of arguments.
         """
-        self._database_id = 0
+        self._database_id = int(**kwargs.get('dbid'))
 
     @property
     def dbid(self):

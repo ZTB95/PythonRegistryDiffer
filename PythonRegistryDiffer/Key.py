@@ -13,11 +13,11 @@ class Key(RegistryObject):
         self._windows_time = int  # modified
         self._name = str  # name
         # self.has_values is derived from self.values' length
-        self.dbid = int(kwargs.get('dbid'))
         self.key_path = str(kwargs.get('key_path'))
         self.values = list(kwargs.get('values'))
         self.modified = int(kwargs.get('modified'))
         self.name = str(kwargs.get('name'))
+        super.__init__(**kwargs)
 
     def __eq__(self, other):
         return self.name == other.name and \
