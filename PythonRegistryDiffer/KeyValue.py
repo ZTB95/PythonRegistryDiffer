@@ -13,7 +13,7 @@ class KeyValue(RegistryObject):
         self.name = kwargs.get('name')
         self.type = kwargs.get('type')
         self.data = kwargs.get('data')
-        super.__init__(**kwargs)
+        super().__init__(**kwargs)
 
     @property
     def name(self):
