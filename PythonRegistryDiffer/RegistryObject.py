@@ -8,7 +8,7 @@ class RegistryObject:
         argument requirements.
         :param kwargs: The dictionary of arguments.
         """
-        self._database_id = int(**kwargs.get('dbid'))
+        self._database_id = int(kwargs.get('dbid'))
 
     @property
     def dbid(self):
