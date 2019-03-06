@@ -1,8 +1,9 @@
 import PythonRegistryDiffer.RegistryObject as RegistryObject
 
 
-class Image(RegistryObject):
+class Image(RegistryObject.RegistryObject):
     def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         self._taken_time = None
         self._label = str
         self._machine = str
@@ -10,7 +11,6 @@ class Image(RegistryObject):
         self.taken_time = kwargs.get('taken_time')
         self.label = kwargs.get('label')
         self.machine = kwargs.get('machine')
-        super.__init__(**kwargs)
 
     @property
     def taken_time(self):
