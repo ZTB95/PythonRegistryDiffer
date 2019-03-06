@@ -17,7 +17,7 @@ class Key(RegistryObject):
         self.values = list(kwargs.get('values'))
         self.modified = int(kwargs.get('modified'))
         self.name = str(kwargs.get('name'))
-        super.__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def __eq__(self, other):
         return self.name == other.name and \
