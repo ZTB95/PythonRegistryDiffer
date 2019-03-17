@@ -97,7 +97,7 @@ class Database:
 
     def rollback(self):
         """
-        Rolls back the database to the previous commit.
+        Rolls back the database to the previous commit. Can't undo changes that have already been committed.
         :return: A dictionary with the values 'errors' and 'data'. 'data' will be True or False for success for failure.
         """
         pass
