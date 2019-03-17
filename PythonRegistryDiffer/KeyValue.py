@@ -1,7 +1,7 @@
 import PythonRegistryDiffer.RegistryObject as RegistryObject
 
 
-class KeyValue(RegistryObject):
+class KeyValue(RegistryObject.RegistryObject):
     def __init__(self, **kwargs):
         """
         Creates a new KeyValue object.
@@ -11,7 +11,7 @@ class KeyValue(RegistryObject):
         self._type = int
         self._data = None  # This will vary based on the registry value type.
         self.name = kwargs.get('name')
-        self.type = kwargs.get('type')
+        self.type = kwargs.get('type')  # TODO: validate typing here and test it in test_KeyValue.py
         self.data = kwargs.get('data')
         super().__init__(**kwargs)
 
