@@ -1,7 +1,7 @@
 import PythonRegistryDiffer.RegistryObject as RegistryObject
 
 
-class Key(RegistryObject):
+class Key(RegistryObject.RegistryObject):
     def __init__(self, **kwargs):
         """
         Creates a new Key object.
@@ -14,7 +14,8 @@ class Key(RegistryObject):
         self._name = str  # name
         # self.has_values is derived from self.values' length
         self.key_path = str(kwargs.get('key_path'))
-        self.values = list(kwargs.get('values'))
+        if kwargs.get('values') is not None:
+            self.values = list(kwargs.get('values'))
         self.modified = int(kwargs.get('modified'))
         self.name = str(kwargs.get('name'))
         super().__init__(**kwargs)
