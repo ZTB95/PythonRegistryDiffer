@@ -1,5 +1,5 @@
 import unittest
-from PythonRegistryDiffer.Key import Key as k
+from PythonRegistryDiffer.key import Key as k
 
 
 class TestKey(unittest.TestCase):

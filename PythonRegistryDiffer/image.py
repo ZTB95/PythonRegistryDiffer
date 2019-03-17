@@ -1,4 +1,4 @@
-import PythonRegistryDiffer.RegistryObject as RegistryObject
+import PythonRegistryDiffer.registryobject as RegistryObject
 
 
 class Image(RegistryObject.RegistryObject):

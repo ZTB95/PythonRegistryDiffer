@@ -1,6 +1,6 @@
 import unittest
 import datetime as dt
-import PythonRegistryDiffer.Image as i
+import PythonRegistryDiffer.image as i
 
 
 class TestImage(unittest.TestCase):

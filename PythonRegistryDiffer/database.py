@@ -1,5 +1,5 @@
 import sqlite3
-import PythonRegistryDiffer.prd_errors
+import PythonRegistryDiffer.prderrors
 
 
 class Database:

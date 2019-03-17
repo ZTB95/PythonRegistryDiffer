@@ -1,5 +1,5 @@
 import unittest
-import PythonRegistryDiffer.user_functions as exec
+import PythonRegistryDiffer.userfunctions as exec
 import tests.testing_prep as tp
 
 

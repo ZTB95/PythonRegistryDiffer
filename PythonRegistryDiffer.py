@@ -1,5 +1,5 @@
 from platform import system, release
-import PythonRegistryDiffer.user_functions as exec
+import PythonRegistryDiffer.userfunctions as exec
 
 
 def get_command():
