@@ -1,5 +1,5 @@
 # PythonRegistryDiffer
-A simple registry diffing tool &amp; library written in Python.
+A simple registry diffing tool written in Python.
 
 
         USAGE:
