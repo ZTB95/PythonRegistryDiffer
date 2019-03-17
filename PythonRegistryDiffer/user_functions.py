@@ -1,9 +1,5 @@
 
 
-def validate_arguments():
-    pass
-
-
 def new_database():
     pass
 
@@ -65,7 +61,7 @@ OPTIONS:
                       "PythonRegistryDiffer> save-db -f file_in_current_dir.db"
                       "PythonRegistryDiffer> diff-images 1 2 -f registry-report.txt" 
 
-        <only for use with the 'new-db' command>
+        <only for use with the 'new-db' or 'list-images' command>
         --no-hklm : Exclude the HKEY_LOCAL_MACHINE root key.
            *hkcc : Exclude the HKEY_CURRENT_CONFIG root key.
            *hkcr : Exclude the HKEY_CLASSES_ROOT root key.
@@ -76,7 +72,7 @@ OPTIONS:
         
         -q | --quiet 		: Suppress printing any information about non-fatal errors.
         
-        -m | --memorymode   : Keeps the database in memory mode instead of saving it to the disk.
+        -m | --memorymode   : Keeps the database in memory mode instead of saving it.
         
         -e | --empty		: Skips creating a baseline image when calling new-database.
         

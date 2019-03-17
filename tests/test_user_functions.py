@@ -5,9 +5,6 @@ import tests.testing_prep as tp
 
 class TestUserFunctions(unittest.TestCase):
 
-    def test_validate_arguments(self):
-        self.assertEqual(exec.validate_arguments(), True)
-
     def test_new_database(self):
         tp.reset_all_changes()
         self.assertEqual(exec.new_database(), True)
