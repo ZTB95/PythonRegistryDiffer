@@ -15,6 +15,11 @@ class KeyValue(RegistryObject.RegistryObject):
         self.data = kwargs.get('data')
         super().__init__(**kwargs)
 
+    def __eq__(self, other):
+        return self.name == other.name and \
+               self.type == other.type and \
+               self.data == other.date
+
     @property
     def name(self):
         return self._name

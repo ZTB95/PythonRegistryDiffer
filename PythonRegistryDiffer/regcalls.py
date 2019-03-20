@@ -42,4 +42,3 @@ def get_all_sub_keys(keypath, computer):
     :return: A dictionary with the values 'errors' & 'data'. 'data' will be a list of complete key paths.
     """
     pass
-
