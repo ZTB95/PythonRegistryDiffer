@@ -60,15 +60,14 @@ class Database:
     def hkcc(self, new):
         self._hkcc = bool(new)
 
-
-
     def add_image(self, image):
         """
         Adds an image to the database. Note this doesn't add keys or values.
         :param image: The image object to add to the database.
         :return: A dictionary with the values 'errors' and 'data'. The 'data' tag will be the new image's database ID.
         """
-        pass
+        if self.auto_commit:
+            self.commit()
 
     def add_key(self, image_id, key):
         """
@@ -77,7 +76,8 @@ class Database:
         :param key: The key object to add to the image.
         :return: A dictionary with the values 'errors' and 'data'. The 'data' tag will be the new key's database ID.
         """
-        pass
+        if self.auto_commit:
+            self.commit()
 
     def add_key_value(self, key_id, key_value):
         """
@@ -86,7 +86,8 @@ class Database:
         :param key_value: The key_value object
         :return: A dictionary with the values 'errors' and 'data'. The 'data' tag will be the new key's database ID.
         """
-        pass
+        if self.auto_commit:
+            self.commit()
 
     def get_image(self, image_id):
         """
@@ -94,7 +95,8 @@ class Database:
         :param image_id: The database ID of the image to get.
         :return: A dictionary with the values 'errors' and 'data'. 'data' will be an instance of the image class.
         """
-        pass
+        if self.auto_commit:
+            self.commit()
 
     def get_key(self, key_id):
         """
@@ -102,7 +104,8 @@ class Database:
         :param key_id: The database ID of the key to get.
         :return: A dictionary with the values 'errors' and 'data'. 'data' will be an instance of the key class.
         """
-        pass
+        if self.auto_commit:
+            self.commit()
 
     def get_key_value(self, key_value_id):
         """
@@ -110,14 +113,16 @@ class Database:
         :param key_value_id: The database ID of the key_value to get.
         :return: A dictionary with the values 'errors' and 'data'. 'data' will be an instance of the key_value class.
         """
-        pass
+        if self.auto_commit:
+            self.commit()
 
     def get_image_list(self):
         """
         Gets a list of images in the database.
         :return: A dictionary with the values 'errors' and 'data'. 'data' will be a list of image instances.
         """
-        pass
+        if self.auto_commit:
+            self.commit()
 
     def get_key_list(self, image_id):
         """
@@ -125,7 +130,8 @@ class Database:
         :param image_id: The image ID of the keys to get.
         :return: A dictionary with the values 'errors' and 'data'. 'data' will be a list of key instances.
         """
-        pass
+        if self.auto_commit:
+            self.commit()
 
     def get_key_value_list(self, key_id):
         """
@@ -133,18 +139,21 @@ class Database:
         :param key_id: The key ID of the key values to get.
         :return: A dictionary with the values 'errors' and 'data'. 'data' will be a list of key instances.
         """
-        pass
+        if self.auto_commit:
+            self.commit()
 
     def commit(self):
         """
         Commits the database changes.
         :return: A dictionary with the values 'errors' and 'data'. 'data' will be True or False for success for failure.
         """
-        pass
+        if self.auto_commit:
+            self.commit()
 
     def rollback(self):
         """
         Rolls back the database to the previous commit. Can't undo changes that have already been committed.
         :return: A dictionary with the values 'errors' and 'data'. 'data' will be True or False for success for failure.
         """
-        pass
+        if self.auto_commit:
+            self.commit()
