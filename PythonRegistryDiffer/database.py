@@ -1,5 +1,8 @@
 import sqlite3
 import PythonRegistryDiffer.prderrors
+from PythonRegistryDiffer.key import Key
+from PythonRegistryDiffer.keyvalue import KeyValue
+from PythonRegistryDiffer.image import Image
 
 
 class Database:
