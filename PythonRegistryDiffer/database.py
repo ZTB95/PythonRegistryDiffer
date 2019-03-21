@@ -6,7 +6,7 @@ class Database:
     """
     SQLite3 ORM for PythonRegistryDiffer.
     """
-    def __init__(self, location, auto_commit=False):
+    def __init__(self, location, auto_commit=False, hklm=True, hkcu=True, hku=True, hkcr=True, hkcc=True):
         """
         Creates a new database file (and object) with all of the tables this tool needs.
         :param location: the location for the database file. Can either be 'memory' or a filename to save to.
@@ -14,6 +14,53 @@ class Database:
         :return: A dictionary with the values 'errors'.
         """
         self.auto_commit = auto_commit
+        self.hklm = hklm
+        self.hkcu = hkcu
+        self.hku = hku
+        self.hkcr = hkcr
+        self.hkcc = hkcc
+
+    @property
+    def hklm(self):
+        return self._hklm
+
+    @hklm.setter
+    def hklm(self, new):
+        self._hklm = bool(new)
+
+    @property
+    def hkcu(self):
+        return self._hkcu
+
+    @hkcu.setter
+    def hkcu(self, new):
+        self._hkcu = bool(new)
+
+    @property
+    def hku(self):
+        return self._hku
+
+    @hku.setter
+    def hku(self, new):
+        self._hku = bool(new)
+
+    @property
+    def hkcr(self):
+        return self._hkcr
+
+    @hkcr.setter
+    def hkcr(self, new):
+        self._hkcr = bool(new)
+
+    @property
+    def hkcc(self):
+        return self._hkcc
+
+    @hkcc.setter
+    def hkcc(self, new):
+        self._hkcc = bool(new)
+
+
 
     def add_image(self, image):
         """
