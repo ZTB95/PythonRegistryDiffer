@@ -6,7 +6,7 @@ class Database:
     """
     SQLite3 ORM for PythonRegistryDiffer.
     """
-    def __init__(self, location, auto_commit=False, hklm=True, hkcu=True, hku=True, hkcr=True, hkcc=True):
+    def __init__(self, location, auto_commit=False, hklm=True, hkcu=True, hku=True, hkcr=True, hkcc=True, save_error_history=True):
         """
         Creates a new database file (and object) with all of the tables this tool needs.
         :param location: the location for the database file. Can either be 'memory' or a filename to save to.
@@ -19,6 +19,8 @@ class Database:
         self.hku = hku
         self.hkcr = hkcr
         self.hkcc = hkcc
+        self.error_history = []
+        self.save_error_history = save_error_history
 
     @property
     def hklm(self):
@@ -66,8 +68,13 @@ class Database:
         :param image: The image object to add to the database.
         :return: A dictionary with the values 'errors' and 'data'. The 'data' tag will be the new image's database ID.
         """
+        errors = []
+
         if self.auto_commit:
             self.commit()
+
+        if self.save_error_history:
+            self.error_history.append(errors)
 
     def add_key(self, image_id, key):
         """
@@ -76,8 +83,13 @@ class Database:
         :param key: The key object to add to the image.
         :return: A dictionary with the values 'errors' and 'data'. The 'data' tag will be the new key's database ID.
         """
+        errors = []
+
         if self.auto_commit:
             self.commit()
+
+        if self.save_error_history:
+            self.error_history.append(errors)
 
     def add_key_value(self, key_id, key_value):
         """
@@ -86,8 +98,13 @@ class Database:
         :param key_value: The key_value object
         :return: A dictionary with the values 'errors' and 'data'. The 'data' tag will be the new key's database ID.
         """
+        errors = []
+
         if self.auto_commit:
             self.commit()
+
+        if self.save_error_history:
+            self.error_history.append(errors)
 
     def get_image(self, image_id):
         """
@@ -95,8 +112,13 @@ class Database:
         :param image_id: The database ID of the image to get.
         :return: A dictionary with the values 'errors' and 'data'. 'data' will be an instance of the image class.
         """
+        errors = []
+
         if self.auto_commit:
             self.commit()
+
+        if self.save_error_history:
+            self.error_history.append(errors)
 
     def get_key(self, key_id):
         """
@@ -104,8 +126,13 @@ class Database:
         :param key_id: The database ID of the key to get.
         :return: A dictionary with the values 'errors' and 'data'. 'data' will be an instance of the key class.
         """
+        errors = []
+
         if self.auto_commit:
             self.commit()
+
+        if self.save_error_history:
+            self.error_history.append(errors)
 
     def get_key_value(self, key_value_id):
         """
@@ -113,16 +140,26 @@ class Database:
         :param key_value_id: The database ID of the key_value to get.
         :return: A dictionary with the values 'errors' and 'data'. 'data' will be an instance of the key_value class.
         """
+        errors = []
+
         if self.auto_commit:
             self.commit()
+
+        if self.save_error_history:
+            self.error_history.append(errors)
 
     def get_image_list(self):
         """
         Gets a list of images in the database.
         :return: A dictionary with the values 'errors' and 'data'. 'data' will be a list of image instances.
         """
+        errors = []
+
         if self.auto_commit:
             self.commit()
+
+        if self.save_error_history:
+            self.error_history.append(errors)
 
     def get_key_list(self, image_id):
         """
@@ -130,8 +167,13 @@ class Database:
         :param image_id: The image ID of the keys to get.
         :return: A dictionary with the values 'errors' and 'data'. 'data' will be a list of key instances.
         """
+        errors = []
+
         if self.auto_commit:
             self.commit()
+
+        if self.save_error_history:
+            self.error_history.append(errors)
 
     def get_key_value_list(self, key_id):
         """
@@ -139,21 +181,30 @@ class Database:
         :param key_id: The key ID of the key values to get.
         :return: A dictionary with the values 'errors' and 'data'. 'data' will be a list of key instances.
         """
+        errors = []
+
         if self.auto_commit:
             self.commit()
+
+        if self.save_error_history:
+            self.error_history.append(errors)
 
     def commit(self):
         """
         Commits the database changes.
         :return: A dictionary with the values 'errors' and 'data'. 'data' will be True or False for success for failure.
         """
-        if self.auto_commit:
-            self.commit()
+        errors = []
+
+        if self.save_error_history:
+            self.error_history.append(errors)
 
     def rollback(self):
         """
         Rolls back the database to the previous commit. Can't undo changes that have already been committed.
         :return: A dictionary with the values 'errors' and 'data'. 'data' will be True or False for success for failure.
         """
-        if self.auto_commit:
-            self.commit()
+        errors = []
+
+        if self.save_error_history:
+            self.error_history.append(errors)
