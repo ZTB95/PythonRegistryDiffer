@@ -44,18 +44,13 @@ _create_only_one_hkey_trigger = ("CREATE TRIGGER trg_onlyOneHKEY BEFORE INSERT "
                                  "SELECT RAISE(FAIL, 'There can only be one row in HKEYs.') "
                                  "END;\n")
 
-_get_key_by_id = ('SELECT * '
-                  'FROM RegKey '
-                  'WHERE ID = % '
-                  ';')
-
-_get_key_value_by_id = ('SELECT * '
-                        'FROM RegKey '
-                        'WHERE ID = % '
-                        ';')
+_get_table_by_id = ('SELECT * '
+                    'FROM %table% '
+                    'WHERE ID = %id% '
+                    ';')
 
 
-def get_new_database_sql():
+def create_database_sql():
     ret = _create_machine_table + \
           _create_image_table + \
           _create_key_table + \
@@ -65,9 +60,7 @@ def get_new_database_sql():
     return ret
 
 
-def get_select_key_by_id(id):
-    return _get_key_by_id.replace('%', str(int(id)))
-
-
-def get_key_value_by_id(id):
-    return _get_key_value_by_id.replace('%', str(int(id)))
+def select_table_by_id_sql(table, id):
+    sql = _get_table_by_id.replace('%table%', str(table))
+    sql = sql.replace('%id%', str(int(id)))
+    return sql
