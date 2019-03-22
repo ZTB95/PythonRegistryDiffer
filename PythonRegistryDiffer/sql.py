@@ -49,6 +49,12 @@ _get_key_by_id = ('SELECT * '
                   'WHERE ID = % '
                   ';')
 
+_get_key_value_by_id = ('SELECT * '
+                        'FROM RegKey '
+                        'WHERE ID = % '
+                        ';')
+
+
 def get_new_database_sql():
     ret = _create_machine_table + \
           _create_image_table + \
@@ -61,3 +67,7 @@ def get_new_database_sql():
 
 def get_select_key_by_id(id):
     return _get_key_by_id.replace('%', str(int(id)))
+
+
+def get_key_value_by_id(id):
+    return _get_key_value_by_id.replace('%', str(int(id)))
