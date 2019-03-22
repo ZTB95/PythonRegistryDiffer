@@ -1,3 +1,5 @@
+
+
 _create_machine_table = ('CREATE TABLE Machine ( '
                          'id INTEGER PRIMARY KEY, '
                          'lastKnownIP VARCHAR(46), '
@@ -42,6 +44,10 @@ _create_only_one_hkey_trigger = ("CREATE TRIGGER trg_onlyOneHKEY BEFORE INSERT "
                                  "SELECT RAISE(FAIL, 'There can only be one row in HKEYs.') "
                                  "END;\n")
 
+_get_key_by_id = ('SELECT * '
+                  'FROM RegKey '
+                  'WHERE ID = % '
+                  ';')
 
 def get_new_database_sql():
     ret = _create_machine_table + \
@@ -51,3 +57,7 @@ def get_new_database_sql():
           _create_hkeys_table + \
           _create_only_one_hkey_trigger
     return ret
+
+
+def get_select_key_by_id(id):
+    return _get_key_by_id.replace('%', str(int(id)))
