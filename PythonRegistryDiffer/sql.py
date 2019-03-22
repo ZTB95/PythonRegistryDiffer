@@ -1,5 +1,4 @@
 
-
 _create_machine_table = ('CREATE TABLE Machine ( '
                          'id INTEGER PRIMARY KEY, '
                          'lastKnownIP VARCHAR(46), '
@@ -44,10 +43,10 @@ _create_only_one_hkey_trigger = ("CREATE TRIGGER trg_onlyOneHKEY BEFORE INSERT "
                                  "SELECT RAISE(FAIL, 'There can only be one row in HKEYs.') "
                                  "END;\n")
 
-_get_table_by_id = ('SELECT * '
-                    'FROM %table% '
-                    'WHERE ID = %id% '
-                    ';')
+_select_all_from_table_by_id = ('SELECT * '
+                                'FROM %table% '
+                                'WHERE %id_of% = %id_get% '
+                                ';')
 
 
 def create_database_sql():
@@ -60,7 +59,22 @@ def create_database_sql():
     return ret
 
 
-def select_table_by_id_sql(table, id):
-    sql = _get_table_by_id.replace('%table%', str(table))
-    sql = sql.replace('%id%', str(int(id)))
+def select_all_from_table_by_id_sql(table, id):
+    sql = _select_all_from_table_by_id.replace('%table%', str(table))
+    sql = sql.replace('%id_get%', str(int(id)))
     return sql
+
+
+def select_all_from_table_by_parent_key(table, parent_id):
+    sql = _select_all_from_table_by_id.replace('%table%', str(table))
+    if table.lower == 'keyvalue':
+        sql = sql.replace('%id_of', 'keyId')
+    elif table.lower == 'key':
+        sql = sql.replace('%id_of%', 'imageId')
+    elif table.lower == 'image':
+        sql = sql.replace('%id_of', 'machineId')
+    else:
+        from sqlite3 import DatabaseError
+        raise DatabaseError
+
+    sel = sql.replace('%id_get$', str(int(id)))
