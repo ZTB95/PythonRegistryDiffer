@@ -120,10 +120,8 @@ class Database:
         """
         Adds an image to the database. Note this doesn't add keys or values.
         :param image: The image object to add to the database.
-        :return: A dictionary with the values 'errors' and 'data'. The 'data' tag will be the new image's database ID.
+        :return: None
         """
-        errors = []
-
         if self.auto_commit:
             self.connection.commit()
 
@@ -132,10 +130,8 @@ class Database:
         Adds a key to the database. Note that this doesn't add the key's values.
         :param image_id: The image to add the key to.
         :param key: The key object to add to the image.
-        :return: A dictionary with the values 'errors' and 'data'. The 'data' tag will be the new key's database ID.
+        :return: None
         """
-        errors = []
-
         if self.auto_commit:
             self.connection.commit()
 
@@ -144,58 +140,53 @@ class Database:
         Adds a (key) value to the specified PythonRegistryDiffer database.
         :param key_id: the id of the key that the key value belongs to.
         :param key_value: The key_value object
-        :return: A dictionary with the values 'errors' and 'data'. The 'data' tag will be the new key's database ID.
+        :return: None
         """
-        errors = []
-
         if self.auto_commit:
             self.connection.commit()
+
+    def get_machine(self, machine_id):
+        pass
 
     def get_image(self, image_id):
         """
         Gets the specified image from the database.
         :param image_id: The database ID of the image to get.
-        :return: A dictionary with the values 'errors' and 'data'. 'data' will be an instance of the image class.
+        :return: Image instance or False
         """
-        errors = []
-
 
     def get_key(self, key_id):
         """
         Gets the specified key from the database.
         :param key_id: The database ID of the key to get.
-        :return: A dictionary with the values 'errors' and 'data'. 'data' will be an instance of the key class.
+        :return: Key Instance or False
         """
-        errors = []
 
     def get_key_value(self, key_value_id):
         """
         Gets the key value from the database.
         :param key_value_id: The database ID of the key_value to get.
-        :return: A dictionary with the values 'errors' and 'data'. 'data' will be an instance of the key_value class.
+        :return: KeyValue instance or False
         """
-        errors = []
 
-    def get_image_list(self):
+    def get_image_list(self, machine_id=0):
         """
         Gets a list of images in the database.
-        :return: A dictionary with the values 'errors' and 'data'. 'data' will be a list of image instances.
+        :param machine_id: set to a DBID to restrict to a specific Machine's Images.
+        :return: A list of Images Instances.
         """
-        errors = []
 
     def get_key_list(self, image_id):
         """
         Gets a list of key objects from the database.
-        :param image_id: The image ID of the keys to get.
-        :return: A dictionary with the values 'errors' and 'data'. 'data' will be a list of key instances.
+        :param image_id: The DBID of the specific Images's Keys.
+        :return: A list of Key instances
         """
-        errors = []
 
     def get_key_value_list(self, key_id):
         """
         Gets a list of key values from the database.
-        :param key_id: The key ID of the key values to get.
-        :return: A dictionary with the values 'errors' and 'data'. 'data' will be a list of key instances.
+        :param key_id: The DBID of the specific Key's KeyValues.
+        :return: A list of KeyValue instances
         """
-        errors = []
 
