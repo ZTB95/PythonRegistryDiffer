@@ -1,3 +1,7 @@
+from .image import Image
+from .key import Key
+from .keyvalue import KeyValue
+from .database import Machine
 
 _create_machine_table = ('CREATE TABLE Machine ( '
                          'id INTEGER PRIMARY KEY, '
@@ -47,6 +51,8 @@ _select_all_from_table_by_id = ('SELECT * '
                                 'FROM %table% '
                                 'WHERE %id_of% = %id_get% '
                                 ';')
+
+_select_newest_id_in_table = ('')
 
 _insert_into_machine = ('')
 
@@ -114,6 +120,7 @@ def select_id_of_newest_item_in_table(table):
     :param table: The table to get the newest item ID of.
     :return: A string of SQL.
     """
+    return _select_newest_id_in_table.replace('%table%', table)
 
 
 def insert_new_object_into_table(object):
@@ -121,5 +128,11 @@ def insert_new_object_into_table(object):
     :param object: The object to insert into the table.
     :return: A string of SQL
     """
-
-
+    if isinstance(object, KeyValue):
+        pass
+    elif isinstance(object, Key):
+        pass
+    elif isinstance(object, Image):
+        pass
+    elif isinstance(object, Machine):
+        pass

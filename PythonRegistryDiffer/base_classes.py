@@ -1,4 +1,4 @@
-class RegistryObject:
+class DatabaseObject:
     """
     Base class for all objects that directly map to Windows registry objects.
     """
@@ -17,3 +17,8 @@ class RegistryObject:
     @dbid.setter
     def dbid(self, new_id):
         self._database_id = new_id
+
+
+class RegistryObject(DatabaseObject):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)

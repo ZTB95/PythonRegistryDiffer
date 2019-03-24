@@ -1,7 +1,7 @@
-import PythonRegistryDiffer.registryobject as RegistryObject
+import PythonRegistryDiffer.base_classes as bc
 
 
-class Image(RegistryObject.RegistryObject):
+class Image(bc.RegistryObject):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._taken_time = None

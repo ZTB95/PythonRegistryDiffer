@@ -211,3 +211,5 @@ class Database:
 
         if self.save_error_history:
             self.error_history.append(errors)
+
+

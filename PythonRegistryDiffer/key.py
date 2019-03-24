@@ -1,7 +1,7 @@
-import PythonRegistryDiffer.registryobject as RegistryObject
+import PythonRegistryDiffer.base_classes as bc
 
 
-class Key(RegistryObject.RegistryObject):
+class Key(bc.RegistryObject):
     def __init__(self, **kwargs):
         """
         Creates a new Key object.
