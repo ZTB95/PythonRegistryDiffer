@@ -13,28 +13,51 @@ class Database:
     """
     def __init__(self, location, auto_commit=False, hklm=True, hkcu=True, hku=True, hkcr=True, hkcc=True):
         """
-        Creates or loads a new database file (and object) with all of the tables this tool needs.
+        Creates or loads a new database file (and object) with all of the tables this tool needs. Use with a context
+        manager. If you're loading an existing database, you can ignore the hk%% items.
         :param location: the location for the database file. Can either be 'memory' or a filename to save to. If the
         file already exists, it will be loaded.
         :param auto_commit: Set to True if you want to automatically commit changes. Default value is False.
         """
         self.auto_commit = auto_commit
         self.error_history = []
+        self.hklm = hklm
+        self.hkcu = hkcu
+        self.hku = hku
+        self.hkcr = hkcr
+        self.hkcc = hkcc
+        self.location = location
+        self.cursor = None
 
-        if os.path.isfile(location):
-            try: # load the database
-                self.connection = sqlite3.connect(location)
-                self.failed = False
-            except sqlerror as e:
-                self.failed = True
-                self.error_history.append(str(e))
+    def __enter__(self):
+        # Get this value before we force it to be true.
+        loaded = os.path.isfile(self.location)
 
-        else:  # create a new database
-            self.hklm = hklm
-            self.hkcu = hkcu
-            self.hku = hku
-            self.hkcr = hkcr
-            self.hkcc = hkcc
+        # Create the database connection.
+        if self.location.lower == 'memory':
+            self.connection = sqlite3.connect(':memory:')
+        else:
+            self.connection = sqlite3.connect(self.location)
+
+        # Create our cursor.
+        self.cursor = self.connection.cursor()
+
+        # Set up the proper HKEY Values if loaded db, or insert them if new db.
+        if loaded:
+            # TODO: select the HKEY values
+            pass
+        else:
+            # TODO: insert the HKEY values
+            pass
+
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.connection:
+            self.connection.rollback()
+            self.connection.close()
+        self.error_history.append(exc_val)
+        return False  # Kill the context manager.
 
     @property
     def hklm(self):
@@ -122,7 +145,6 @@ class Database:
         if self.auto_commit:
             self.commit()
 
-
     def get_key(self, key_id):
         """
         Gets the specified key from the database.
@@ -134,7 +156,6 @@ class Database:
         if self.auto_commit:
             self.commit()
 
-
     def get_key_value(self, key_value_id):
         """
         Gets the key value from the database.
@@ -145,7 +166,6 @@ class Database:
 
         if self.auto_commit:
             self.commit()
-
 
     def get_image_list(self):
         """
@@ -168,7 +188,6 @@ class Database:
         if self.auto_commit:
             self.commit()
 
-
     def get_key_value_list(self, key_id):
         """
         Gets a list of key values from the database.
@@ -179,21 +198,3 @@ class Database:
 
         if self.auto_commit:
             self.commit()
-
-
-    def commit(self):
-        """
-        Commits the database changes.
-        :return: A dictionary with the values 'errors' and 'data'. 'data' will be True or False for success for failure.
-        """
-        errors = []
-
-    def rollback(self):
-        """
-        Rolls back the database to the previous commit. Can't undo changes that have already been committed.
-        :return: A dictionary with the values 'errors' and 'data'. 'data' will be True or False for success for failure.
-        """
-        errors = []
-
-
-
