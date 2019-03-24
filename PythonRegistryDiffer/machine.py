@@ -1,7 +1,7 @@
-from .base_classes import DatabaseObject
+from .base_classes import MappedToDatabase
 
 
-class Machine(DatabaseObject):
+class Machine(MappedToDatabase):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

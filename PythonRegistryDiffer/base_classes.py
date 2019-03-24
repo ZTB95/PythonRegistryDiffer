@@ -1,4 +1,4 @@
-class DatabaseObject:
+class MappedToDatabase:
     """
     Base class for all objects that directly map to Windows registry objects.
     """
@@ -22,6 +22,6 @@ class DatabaseObject:
         self._database_id = new_id
 
 
-class RegistryObject(DatabaseObject):
+class RegistryObject(MappedToDatabase):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

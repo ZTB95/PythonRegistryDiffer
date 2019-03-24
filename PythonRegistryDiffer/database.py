@@ -4,6 +4,7 @@ from . import sql
 from .key import Key
 from .keyvalue import KeyValue
 from .image import Image
+from .machine import Machine
 
 
 class Database:
