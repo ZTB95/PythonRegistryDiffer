@@ -112,7 +112,7 @@ insert_into_regkey = 'INSERT INTO RegKey VALUES ?'
 
 insert_into_regkeyvalue = 'INSERT INTO RegKeyValue VALUES ?'
 
-insert_hkeys = 'INSERT INTO HKEYs VALUES ?'
+insert_hkeys = 'INSERT INTO HKEYs VALUES (?,?,?,?,?)'
 
 # CONTROL
 commit = 'COMMIT;'

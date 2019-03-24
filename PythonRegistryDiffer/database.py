@@ -1,7 +1,6 @@
 import os.path
 import sqlite3
-from sqlite3 import Error as sqlerror
-from .sql import SQL
+from . import sql
 from .key import Key
 from .keyvalue import KeyValue
 from .image import Image
@@ -27,37 +26,24 @@ class Database:
         self.hkcr = hkcr
         self.hkcc = hkcc
         self.location = location
+
+        # Defined in self.open() (or __enter__())
         self.cursor = None
+        self.connection = None
 
     def __enter__(self):
-        # Get this value before we force it to be true.
-        loaded = os.path.isfile(self.location)
-
-        # Create the database connection.
-        if self.location.lower == 'memory':
-            self.connection = sqlite3.connect(':memory:')
-        else:
-            self.connection = sqlite3.connect(self.location)
-
-        # Create our cursor.
-        self.cursor = self.connection.cursor()
-
-        # Set up the proper HKEY Values if loaded db, or insert them if new db.
-        if loaded:
-            # TODO: select the HKEY values
-            pass
-        else:
-            # TODO: insert the HKEY values
-            pass
-
+        self.open()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        if self.connection:
-            self.connection.rollback()
-            self.connection.close()
-        self.error_history.append(exc_val)
+        self.close()
         return False  # Kill the context manager.
+        # TODO: exception stuff here
+
+    @property
+    def hkeys(self):
+        hkey_tuple = (self.hkcr, self.hkcu, self.hku, self.hkcr, self.hkcc)
+        return hkey_tuple
 
     @property
     def hklm(self):
@@ -99,6 +85,37 @@ class Database:
     def hkcc(self, new):
         self._hkcc = bool(new)
 
+    def open(self):
+        # Get this value before we force it to be true.
+        loaded = os.path.isfile(self.location)
+
+        # Create the database connection.
+        if self.location.lower == 'memory':
+            self.connection = sqlite3.connect(':memory:')
+        else:
+            self.connection = sqlite3.connect(self.location)
+
+        # Create our cursor.
+        self.cursor = self.connection.cursor()
+
+        # Set up the proper HKEY Values if loaded db, or create the database and insert HKEYs if new db.
+        if loaded:
+            # TODO: select the HKEY values
+            pass
+        else:
+            self.cursor.execute(sql.create_database)
+            self.cursor.execute(sql.insert_hkeys, self.hkeys)
+            self.connection.commit()
+            pass
+
+    def close(self):
+        if self.connection:
+            self.connection.rollback()
+            self.connection.close()
+
+    def add_machine(self, machine):
+        pass
+
     def add_image(self, image):
         """
         Adds an image to the database. Note this doesn't add keys or values.
@@ -108,7 +125,7 @@ class Database:
         errors = []
 
         if self.auto_commit:
-            self.commit()
+            self.connection.commit()
 
     def add_key(self, image_id, key):
         """
@@ -120,7 +137,7 @@ class Database:
         errors = []
 
         if self.auto_commit:
-            self.commit()
+            self.connection.commit()
 
     def add_key_value(self, key_id, key_value):
         """
@@ -132,7 +149,7 @@ class Database:
         errors = []
 
         if self.auto_commit:
-            self.commit()
+            self.connection.commit()
 
     def get_image(self, image_id):
         """
@@ -142,8 +159,6 @@ class Database:
         """
         errors = []
 
-        if self.auto_commit:
-            self.commit()
 
     def get_key(self, key_id):
         """
@@ -153,9 +168,6 @@ class Database:
         """
         errors = []
 
-        if self.auto_commit:
-            self.commit()
-
     def get_key_value(self, key_value_id):
         """
         Gets the key value from the database.
@@ -164,18 +176,12 @@ class Database:
         """
         errors = []
 
-        if self.auto_commit:
-            self.commit()
-
     def get_image_list(self):
         """
         Gets a list of images in the database.
         :return: A dictionary with the values 'errors' and 'data'. 'data' will be a list of image instances.
         """
         errors = []
-
-        if self.auto_commit:
-            self.commit()
 
     def get_key_list(self, image_id):
         """
@@ -185,9 +191,6 @@ class Database:
         """
         errors = []
 
-        if self.auto_commit:
-            self.commit()
-
     def get_key_value_list(self, key_id):
         """
         Gets a list of key values from the database.
@@ -196,5 +199,3 @@ class Database:
         """
         errors = []
 
-        if self.auto_commit:
-            self.commit()
