@@ -24,4 +24,4 @@ class Machine(DatabaseObject):
 
     @hostname.setter
     def hostname(self, new):
-        self.hostname = new
+        self._hostname = new

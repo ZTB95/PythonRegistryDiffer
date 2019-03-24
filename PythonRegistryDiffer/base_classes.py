@@ -8,7 +8,10 @@ class DatabaseObject:
         argument requirements.
         :param kwargs: The dictionary of arguments.
         """
-        self._database_id = int(kwargs.get('dbid'))
+        try:
+            self._database_id = int(kwargs.get('dbid'))
+        except Exception:
+            self._database_id = None
 
     @property
     def dbid(self):

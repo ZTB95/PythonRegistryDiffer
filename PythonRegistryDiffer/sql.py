@@ -1,8 +1,4 @@
-from .image import Image
-from .key import Key
-from .keyvalue import KeyValue
-from .database import Machine
-
+# CREATES
 _create_machine_table = ('CREATE TABLE Machine ( '
                          'id INTEGER PRIMARY KEY, '
                          'lastKnownIP VARCHAR(46), '
@@ -21,11 +17,11 @@ _create_key_table = ('CREATE TABLE RegKey ( '
                      'FOREIGN KEY (regImageId) REFERENCES RegImage(id) ENFORCED, '
                      'path VARCHAR(256) NOT NULL , '
                      'lastModified DATETIME NOT NULL '
-                     ');\n')  # TODO Remove the name column from the DBD and update the table's name
+                     ');\n')  # TODO: Remove the name column from the DBD and update the table's name
 
-_create_key_value_table = ('CREATE TABLE RegKeyValue ( '  # TODO Update the table's name in the DBD
+_create_key_value_table = ('CREATE TABLE RegKeyValue ( '  # TODO: Update the table's name in the DBD
                            'id INTEGER PRIMARY KEY, '
-                           'FOREIGN KEY (regKeyId) REFERENCES RegKey(id) ENFORCED, '
+                           'FOREIGN KEY (regKeyId) REFERENCES RegKey(id) ENFORCED, ' # TODO: update the column name in the DBD
                            'name VARCHAR(256) NOT NULL, '
                            'type INTEGER NOT NULL, '
                            'data BLOB(1048576) NOT NULL '  # 1 MB should be enough for anything in a REG_BINARY key, right? TODO: try to break this
@@ -47,92 +43,77 @@ _create_only_one_hkey_trigger = ("CREATE TRIGGER trg_onlyOneHKEY BEFORE INSERT "
                                  "SELECT RAISE(FAIL, 'There can only be one row in HKEYs.') "
                                  "END;\n")
 
-_select_all_from_table_by_id = ('SELECT * '
-                                'FROM %table% '
-                                'WHERE %id_of% = %id_get% '
-                                ';')
+create_database = _create_machine_table + \
+                  _create_image_table + \
+                  _create_key_table + \
+                  _create_key_value_table + \
+                  _create_hkeys_table + \
+                  _create_only_one_hkey_trigger
 
-_select_newest_id_in_table = ('')
+# SELECTS
+select_all_from_machine_by_id = ('SELECT * '
+                                 'FROM Machine '
+                                 'WHERE id = ? ')
 
-_insert_into_machine = ('')
+select_all_from_regimage_by_id = ('SELECT * '
+                                  'FROM RegImage '
+                                  'WHERE id = ? ')
 
-_insert_into_image = ('')
+select_all_from_regkey_by_id = ('SELECT * '
+                                'FROM RegKey '
+                                'WHERE id = ? ')
 
-_insert_into_key = ('')
+select_all_from_regkeyvalue_by_id = ('SELECT * '
+                                     'FROM RegKeyValue '
+                                     'WHERE id = ? ')
 
-_insert_into_value = ('')
+select_all_from_hkeys_by_id = ('SELECT * '
+                               'FROM HKEYs'
+                               'WHERE id = ? ')
 
-_insert_into_hkeys = ('')
+select_all_children_of_machine_by_id = ('SELECT * '
+                                        'FROM RegImage '
+                                        'WHERE machineId = ? ')
 
+select_all_children_of_regimage_by_id = ('SELECT * '
+                                         'FROM RegKey '
+                                         'WHERE imageId = ? ')
 
-def create_database_sql(hklm, hkcu, hku, hkcr, hkcc):
-    """
-    Returns a string of SQL that will create a new database.
-    :return: sql string
-    :param hklm: bool / is this hkey is going to be queried for this database.
-    :param hkcu: bool / is this hkey is going to be queried for this database.
-    :param hku: bool / is this hkey is going to be queried for this database.
-    :param hkcr: bool / is this hkey is going to be queried for this database.
-    :param hkcc: bool / is this hkey is going to be queried for this database.
-    """
-    ret = _create_machine_table + \
-          _create_image_table + \
-          _create_key_table + \
-          _create_key_value_table + \
-          _create_hkeys_table + \
-          _create_only_one_hkey_trigger
-    return ret
+select_all_children_of_regkey_by_id = ('SELECT * '
+                                       'FROM RegKeyValue '
+                                       'WHERE regKeyId = ? ')
 
+select_newest_in_machine = ('SELECT * '
+                            'FROM Machine'
+                            'WHERE id=(SELECT MAX(id) from Machine) ')
 
-def select_all_from_table_by_id_sql(table, id):
-    """
-    :param table: The table to select from.
-    :param id: The DBID of the object to get.
-    :return: A string of SQL.
-    """
-    sql = _select_all_from_table_by_id.replace('%table%', str(table))
-    sql = sql.replace('%id_get%', str(int(id)))
-    return sql
+select_newest_in_regimage = ('SELECT * '
+                             'FROM RegImage'
+                             'WHERE id=(SELECT MAX(id) from RegImage) ')
 
+select_newest_in_regkey = ('SELECT * '
+                           'FROM RegKey'
+                           'WHERE id=(SELECT MAX(id) from RegKey) ')
 
-def select_all_from_table_by_parent_id(table, parent_id):
-    """
-    :param table: The table to select from. (The child table.)
-    :param parent_id: The ID of the parent item in the parent table to get children of.
-    :return: A string of SQL.
-    """
-    sql = _select_all_from_table_by_id.replace('%table%', str(table))
-    if table.lower == 'regkeyvalue':
-        sql = sql.replace('%id_of', 'RegKeyId')
-    elif table.lower == 'regkey':
-        sql = sql.replace('%id_of%', 'RegImageId')
-    elif table.lower == 'regimage':
-        sql = sql.replace('%id_of', 'machineId')
-    else:
-        from sqlite3 import DatabaseError
-        raise DatabaseError
+select_newest_in_regkeyvalue = ('SELECT * '
+                                'FROM RegKeyValue'
+                                'WHERE id=(SELECT MAX(id) from RegKeyValue) ')
 
-    sql = sql.replace('%id_get$', str(int(id)))
+select_hkeys = ('SELECT * '
+                'FROM hkeys'
+                'WHERE id=(SELECT MAX(id) from hkeys) ')
 
+# INSERTS
+insert_into_machine = ('INSERT INTO Machine VALUES ?')
 
-def select_id_of_newest_item_in_table(table):
-    """
-    :param table: The table to get the newest item ID of.
-    :return: A string of SQL.
-    """
-    return _select_newest_id_in_table.replace('%table%', table)
+insert_into_regimage = ('INSERT INTO RegImage VALUES ?')
+
+insert_into_regkey = ('INSERT INTO RegKey VALUES ?')
+
+insert_into_regkeyvalue = ('INSERT INTO RegKeyValue VALUES ?')
+
+insert_hkeys = ('INSERT INTO HKEYs VALUES ?')
 
 
-def insert_new_object_into_table(object):
-    """
-    :param object: The object to insert into the table.
-    :return: A string of SQL
-    """
-    if isinstance(object, KeyValue):
-        pass
-    elif isinstance(object, Key):
-        pass
-    elif isinstance(object, Image):
-        pass
-    elif isinstance(object, Machine):
-        pass
+
+
