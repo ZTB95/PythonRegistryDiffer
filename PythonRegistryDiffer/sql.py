@@ -53,35 +53,35 @@ create_database = _create_machine_table + \
 # SELECTS
 select_all_from_machine_by_id = ('SELECT * '
                                  'FROM Machine '
-                                 'WHERE id = ? ')
+                                 'WHERE id =?')
 
 select_all_from_regimage_by_id = ('SELECT * '
                                   'FROM RegImage '
-                                  'WHERE id = ? ')
+                                  'WHERE id=? ')
 
 select_all_from_regkey_by_id = ('SELECT * '
                                 'FROM RegKey '
-                                'WHERE id = ? ')
+                                'WHERE id=?')
 
 select_all_from_regkeyvalue_by_id = ('SELECT * '
                                      'FROM RegKeyValue '
-                                     'WHERE id = ? ')
+                                     'WHERE id=? ')
 
 select_all_from_hkeys_by_id = ('SELECT * '
-                               'FROM HKEYs'
-                               'WHERE id = ? ')
+                               'FROM HKEYs '
+                               'WHERE i =? ')
 
 select_all_children_of_machine_by_id = ('SELECT * '
                                         'FROM RegImage '
-                                        'WHERE machineId = ? ')
+                                        'WHERE machineId=? ')
 
 select_all_children_of_regimage_by_id = ('SELECT * '
                                          'FROM RegKey '
-                                         'WHERE imageId = ? ')
+                                         'WHERE imageId=? ')
 
 select_all_children_of_regkey_by_id = ('SELECT * '
                                        'FROM RegKeyValue '
-                                       'WHERE regKeyId = ? ')
+                                       'WHERE regKeyId=? ')
 
 select_newest_in_machine = ('SELECT * '
                             'FROM Machine'
@@ -104,16 +104,16 @@ select_hkeys = ('SELECT * '
                 'WHERE id=(SELECT MAX(id) from hkeys) ')
 
 # INSERTS
-insert_into_machine = ('INSERT INTO Machine VALUES ?')
+insert_into_machine = 'INSERT INTO Machine VALUES ?'
 
-insert_into_regimage = ('INSERT INTO RegImage VALUES ?')
+insert_into_regimage = 'INSERT INTO RegImage VALUES ?'
 
-insert_into_regkey = ('INSERT INTO RegKey VALUES ?')
+insert_into_regkey = 'INSERT INTO RegKey VALUES ?'
 
-insert_into_regkeyvalue = ('INSERT INTO RegKeyValue VALUES ?')
+insert_into_regkeyvalue = 'INSERT INTO RegKeyValue VALUES ?'
 
-insert_hkeys = ('INSERT INTO HKEYs VALUES ?')
+insert_hkeys = 'INSERT INTO HKEYs VALUES ?'
 
-
-
-
+# CONTROL
+commit = 'COMMIT;'
+rollback = 'ROLLBACK;'

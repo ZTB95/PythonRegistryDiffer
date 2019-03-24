@@ -1,4 +1,6 @@
+import os.path
 import sqlite3
+from sqlite3 import Error as sqlerror
 from .sql import SQL
 from .key import Key
 from .keyvalue import KeyValue
@@ -9,21 +11,30 @@ class Database:
     """
     SQLite3 ORM for PythonRegistryDiffer.
     """
-    def __init__(self, location, auto_commit=False, hklm=True, hkcu=True, hku=True, hkcr=True, hkcc=True, save_error_history=True):
+    def __init__(self, location, auto_commit=False, hklm=True, hkcu=True, hku=True, hkcr=True, hkcc=True):
         """
-        Creates a new database file (and object) with all of the tables this tool needs.
-        :param location: the location for the database file. Can either be 'memory' or a filename to save to.
+        Creates or loads a new database file (and object) with all of the tables this tool needs.
+        :param location: the location for the database file. Can either be 'memory' or a filename to save to. If the
+        file already exists, it will be loaded.
         :param auto_commit: Set to True if you want to automatically commit changes. Default value is False.
-        :return: A dictionary with the values 'errors'.
         """
         self.auto_commit = auto_commit
-        self.hklm = hklm
-        self.hkcu = hkcu
-        self.hku = hku
-        self.hkcr = hkcr
-        self.hkcc = hkcc
         self.error_history = []
-        self.save_error_history = save_error_history
+
+        if os.path.isfile(location):
+            try: # load the database
+                self.connection = sqlite3.connect(location)
+                self.failed = False
+            except sqlerror as e:
+                self.failed = True
+                self.error_history.append(str(e))
+
+        else:  # create a new database
+            self.hklm = hklm
+            self.hkcu = hkcu
+            self.hku = hku
+            self.hkcr = hkcr
+            self.hkcc = hkcc
 
     @property
     def hklm(self):
@@ -76,9 +87,6 @@ class Database:
         if self.auto_commit:
             self.commit()
 
-        if self.save_error_history:
-            self.error_history.append(errors)
-
     def add_key(self, image_id, key):
         """
         Adds a key to the database. Note that this doesn't add the key's values.
@@ -90,9 +98,6 @@ class Database:
 
         if self.auto_commit:
             self.commit()
-
-        if self.save_error_history:
-            self.error_history.append(errors)
 
     def add_key_value(self, key_id, key_value):
         """
@@ -106,9 +111,6 @@ class Database:
         if self.auto_commit:
             self.commit()
 
-        if self.save_error_history:
-            self.error_history.append(errors)
-
     def get_image(self, image_id):
         """
         Gets the specified image from the database.
@@ -120,8 +122,6 @@ class Database:
         if self.auto_commit:
             self.commit()
 
-        if self.save_error_history:
-            self.error_history.append(errors)
 
     def get_key(self, key_id):
         """
@@ -134,8 +134,6 @@ class Database:
         if self.auto_commit:
             self.commit()
 
-        if self.save_error_history:
-            self.error_history.append(errors)
 
     def get_key_value(self, key_value_id):
         """
@@ -148,8 +146,6 @@ class Database:
         if self.auto_commit:
             self.commit()
 
-        if self.save_error_history:
-            self.error_history.append(errors)
 
     def get_image_list(self):
         """
@@ -160,9 +156,6 @@ class Database:
 
         if self.auto_commit:
             self.commit()
-
-        if self.save_error_history:
-            self.error_history.append(errors)
 
     def get_key_list(self, image_id):
         """
@@ -175,8 +168,6 @@ class Database:
         if self.auto_commit:
             self.commit()
 
-        if self.save_error_history:
-            self.error_history.append(errors)
 
     def get_key_value_list(self, key_id):
         """
@@ -189,8 +180,6 @@ class Database:
         if self.auto_commit:
             self.commit()
 
-        if self.save_error_history:
-            self.error_history.append(errors)
 
     def commit(self):
         """
@@ -199,9 +188,6 @@ class Database:
         """
         errors = []
 
-        if self.save_error_history:
-            self.error_history.append(errors)
-
     def rollback(self):
         """
         Rolls back the database to the previous commit. Can't undo changes that have already been committed.
@@ -209,7 +195,5 @@ class Database:
         """
         errors = []
 
-        if self.save_error_history:
-            self.error_history.append(errors)
 
 
