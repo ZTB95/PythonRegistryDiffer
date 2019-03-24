@@ -48,8 +48,27 @@ _select_all_from_table_by_id = ('SELECT * '
                                 'WHERE %id_of% = %id_get% '
                                 ';')
 
+_insert_into_machine = ('')
 
-def create_database_sql():
+_insert_into_image = ('')
+
+_insert_into_key = ('')
+
+_insert_into_value = ('')
+
+_insert_into_hkeys = ('')
+
+
+def create_database_sql(hklm, hkcu, hku, hkcr, hkcc):
+    """
+    Returns a string of SQL that will create a new database.
+    :return: sql string
+    :param hklm: bool / is this hkey is going to be queried for this database.
+    :param hkcu: bool / is this hkey is going to be queried for this database.
+    :param hku: bool / is this hkey is going to be queried for this database.
+    :param hkcr: bool / is this hkey is going to be queried for this database.
+    :param hkcc: bool / is this hkey is going to be queried for this database.
+    """
     ret = _create_machine_table + \
           _create_image_table + \
           _create_key_table + \
@@ -60,21 +79,47 @@ def create_database_sql():
 
 
 def select_all_from_table_by_id_sql(table, id):
+    """
+    :param table: The table to select from.
+    :param id: The DBID of the object to get.
+    :return: A string of SQL.
+    """
     sql = _select_all_from_table_by_id.replace('%table%', str(table))
     sql = sql.replace('%id_get%', str(int(id)))
     return sql
 
 
-def select_all_from_table_by_parent_key(table, parent_id):
+def select_all_from_table_by_parent_id(table, parent_id):
+    """
+    :param table: The table to select from. (The child table.)
+    :param parent_id: The ID of the parent item in the parent table to get children of.
+    :return: A string of SQL.
+    """
     sql = _select_all_from_table_by_id.replace('%table%', str(table))
-    if table.lower == 'keyvalue':
-        sql = sql.replace('%id_of', 'keyId')
-    elif table.lower == 'key':
-        sql = sql.replace('%id_of%', 'imageId')
-    elif table.lower == 'image':
+    if table.lower == 'regkeyvalue':
+        sql = sql.replace('%id_of', 'RegKeyId')
+    elif table.lower == 'regkey':
+        sql = sql.replace('%id_of%', 'RegImageId')
+    elif table.lower == 'regimage':
         sql = sql.replace('%id_of', 'machineId')
     else:
         from sqlite3 import DatabaseError
         raise DatabaseError
 
-    sel = sql.replace('%id_get$', str(int(id)))
+    sql = sql.replace('%id_get$', str(int(id)))
+
+
+def select_id_of_newest_item_in_table(table):
+    """
+    :param table: The table to get the newest item ID of.
+    :return: A string of SQL.
+    """
+
+
+def insert_new_object_into_table(object):
+    """
+    :param object: The object to insert into the table.
+    :return: A string of SQL
+    """
+
+
