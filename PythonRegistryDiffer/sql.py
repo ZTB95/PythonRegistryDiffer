@@ -104,12 +104,12 @@ select_hkeys = ('SELECT * '
                 'WHERE id=(SELECT MAX(id) from hkeys) ')
 
 # INSERTS
-insert_into_machine = 'INSERT INTO Machine VALUES ?'
+insert_into_machine = 'INSERT INTO Machine VALUES (?, ?)'
 
-insert_into_regimage = 'INSERT INTO RegImage VALUES ?'
+insert_into_regimage = 'INSERT INTO RegImage VALUES (?, ?, ?)'
 
-insert_into_regkey = 'INSERT INTO RegKey VALUES ?'
+insert_into_regkey = 'INSERT INTO RegKey VALUES (?, ?, ?, ?)'
 
-insert_into_regkeyvalue = 'INSERT INTO RegKeyValue VALUES ?'
+insert_into_regkeyvalue = 'INSERT INTO RegKeyValue VALUES (?, ?, ?, ?)'
 
-insert_hkeys = 'INSERT INTO HKEYs VALUES (?,?,?,?,?)'
+insert_hkeys = 'INSERT INTO HKEYs VALUES (?, ?, ?, ?, ?)'

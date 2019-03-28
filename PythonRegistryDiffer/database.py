@@ -101,18 +101,28 @@ class Database:
 
         # Set up the proper HKEY Values if loaded db, or create the database and insert HKEYs if new db.
         if loaded:
-            # TODO: select the HKEY values
-            pass
+            self.cursor.execute(sql.select_hkeys)
+            hkeys = self.cursor.fetchall()
+            self.hklm = bool(hkeys[0][1])
+            self.hkcu = bool(hkeys[0][2])
+            self.hku = bool(hkeys[0][3])
+            self.hkcr = bool(hkeys[0][4])
+            self.hkcc = bool(hkeys[0][5])
         else:
             self.cursor.execute(sql.create_database)
             self.cursor.execute(sql.insert_hkeys, self.hkeys)
             self.connection.commit()
-            pass
 
     def close(self):
         if self.connection:
-            self.connection.rollback()
+
+            if self.auto_commit:
+                self.connection.commit()
+            else:
+                self.connection.rollback()
+
             self.connection.close()
+        self.connection = None  # In case self.close gets called before self.open, for whatever reason.
 
     def add_machine(self, machine):
         pass
