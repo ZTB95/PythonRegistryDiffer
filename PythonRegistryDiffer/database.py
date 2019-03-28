@@ -192,7 +192,9 @@ class Database:
         :return: An instance of the Machine class.
         """
         self.cursor.execute(sql.select_all_from_machine_by_id, machine_id)
-        machine_result = self.cursor.fetchone()
+        mc = self.cursor.fetchone()
+        new_machine = Machine(dbid=mc[0], ip=mc[1], hostname=[2])
+        return new_machine
 
     def get_image(self, image_id):
         """
@@ -200,6 +202,10 @@ class Database:
         :param image_id: The database ID of the image to get.
         :return: Image instance or False
         """
+        self.cursor.execute(sql.select_all_from_regimage_by_id, image_id)
+        im = self.cursor.fetchone()
+        new_image = Image(dbid=im[0], taken_time=im[3], label=im[2], machine=im[1])  # TODO: Verify what data types are coming out of these queries...
+        return new_image
 
     def get_key(self, key_id):
         """
@@ -207,6 +213,10 @@ class Database:
         :param key_id: The database ID of the key to get.
         :return: Key Instance or False
         """
+        self.cursor.execute(sql.select_all_children_of_regkey_by_id, key_id)
+        ky = self.cursor.fetchone()
+        new_key = Key(dbid=ky[0], key_path=ky[2], modified=ky[3], name=ky[4])
+        return new_key
 
     def get_key_value(self, key_value_id):
         """
@@ -214,6 +224,10 @@ class Database:
         :param key_value_id: The database ID of the key_value to get.
         :return: KeyValue instance or False
         """
+        self.cursor.execute(sql.select_all_from_regkeyvalue_by_id, key_value_id)
+        kv = self.cursor.fetchone()
+        new_key_value = Key(dbid=kv[0], name=kv[2], type=kv[3], data=kv[4])
+        return new_key_value
 
     def get_image_list(self, machine_id=0):
         """
@@ -221,7 +235,7 @@ class Database:
         :param machine_id: set to a DBID to restrict to a specific Machine's Images.
         :return: A list of Images Instances.
         """
-
+        
     def get_key_list(self, image_id):
         """
         Gets a list of key objects from the database.
