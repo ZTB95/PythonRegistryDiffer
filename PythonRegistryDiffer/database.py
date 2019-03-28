@@ -125,7 +125,18 @@ class Database:
         self.connection = None  # In case self.close gets called before self.open, for whatever reason.
 
     def add_machine(self, machine):
-        pass
+        """
+        Adds a Machine object to the database.
+        :param machine: The Machine object to add to the database.
+        :return: None.
+        """
+        self.cursor.execute(sql.insert_into_machine, (
+            machine.last_ip,
+            machine.hostname
+        ))
+
+        if self.auto_commit:
+            self.connection.commit()
 
     def add_image(self, image):
         """
@@ -133,6 +144,12 @@ class Database:
         :param image: The image object to add to the database.
         :return: None
         """
+        self.cursor.execute(sql.insert_into_regimage, (
+            image.machine,  # TODO: Review having the parent ID inside of Image, but not the other objects.
+            image.label,
+            image.taken_time  # TODO: fix the time stuff here.
+        ))
+
         if self.auto_commit:
             self.connection.commit()
 
@@ -143,21 +160,39 @@ class Database:
         :param key: The key object to add to the image.
         :return: None
         """
+        self.cursor.execute(sql.insert_into_regkey, (
+            image_id,
+            key.key_path,  # TODO: Review names for class properties. They're inconsistent.
+            key.modified,
+            key.name
+        ))
         if self.auto_commit:
             self.connection.commit()
 
-    def add_key_value(self, key_id, key_value):
+    def add_key_value(self, key_id, keyvalue):
         """
         Adds a (key) value to the specified PythonRegistryDiffer database.
         :param key_id: the id of the key that the key value belongs to.
-        :param key_value: The key_value object
+        :param keyvalue: The key_value object
         :return: None
         """
+        self.cursor.execute(sql.insert_into_regkeyvalue, (
+            key_id,
+            keyvalue.name,
+            keyvalue.type,
+            keyvalue.data  # TODO: may have to sent this in using the bytes class? Testing is needed.
+        ))
         if self.auto_commit:
             self.connection.commit()
 
     def get_machine(self, machine_id):
-        pass
+        """
+        Gets the specified machine from the Database.
+        :param machine_id: The ID of the machine to get.
+        :return: An instance of the Machine class.
+        """
+        self.cursor.execute(sql.select_all_from_machine_by_id, machine_id)
+        machine_result = self.cursor.fetchone()
 
     def get_image(self, image_id):
         """

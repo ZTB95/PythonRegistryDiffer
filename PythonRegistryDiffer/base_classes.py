@@ -25,3 +25,5 @@ class MappedToDatabase:
 class RegistryObject(MappedToDatabase):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
+# TODO: Update the documentation here.
