@@ -235,13 +235,24 @@ class Database:
         :param machine_id: set to a DBID to restrict to a specific Machine's Images.
         :return: A list of Images Instances.
         """
-        
+        self.cursor.execute(sql.select_all_children_of_machine)
+        im_list = self.cursor.fetchall()
+        new_image_list = []
+        for item in im_list:
+            new_image_list.append(Image(dbid=item[0], taken_time=item[3], label=item[2], machine=item[1]))
+        return new_image_list
+
     def get_key_list(self, image_id):
         """
         Gets a list of key objects from the database.
         :param image_id: The DBID of the specific Images's Keys.
         :return: A list of Key instances
         """
+        self.cursor.execute(sql.select_all_children_of_regimage_by_id, image_id)
+        ky_list = self.cursor.fetchall()
+        new_key_list = []
+        for item in ky_list:
+            new_key_list.append(Key(dbid=item[0], name=item[2], type=item[3], data=item[4]))  # TODO: Make all of these db->instance calls DRY
 
     def get_key_value_list(self, key_id):
         """
@@ -249,4 +260,9 @@ class Database:
         :param key_id: The DBID of the specific Key's KeyValues.
         :return: A list of KeyValue instances
         """
+        self.cursor.execute(sql.select_all_children_of_regkey_by_id, key_id)
+        kv_list = self.cursor.fetchall()
+        new_keyvalue_list = []
+        for item in kv_list:
+            new_keyvalue_list.append(Key(dbid=item[0], name=item[2], type=item[3], data=item[4]))
 

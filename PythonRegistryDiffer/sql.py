@@ -75,6 +75,9 @@ select_all_children_of_machine_by_id = ('SELECT * '
                                         'FROM RegImage '
                                         'WHERE machineId=? ')
 
+select_all_children_of_machine = ('SELECT * '
+                                  'FROM RegImage ')
+
 select_all_children_of_regimage_by_id = ('SELECT * '
                                          'FROM RegKey '
                                          'WHERE imageId=? ')
