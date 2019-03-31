@@ -92,9 +92,9 @@ class Database:
 
         # Create the database connection.
         if self.location.lower == 'memory':
-            self.connection = sqlite3.connect(':memory:')
+            self.connection = sqlite3.connect(':memory:', detect_types=sqlite3.PARSE_DECLTYPES)
         else:
-            self.connection = sqlite3.connect(self.location)
+            self.connection = sqlite3.connect(self.location, detect_types=sqlite3.PARSE_DECLTYPES)
 
         # Create our cursor.
         self.cursor = self.connection.cursor()
@@ -193,7 +193,7 @@ class Database:
         """
         self.cursor.execute(sql.select_all_from_machine_by_id, machine_id)
         mc = self.cursor.fetchone()
-        new_machine = Machine(dbid=mc[0], ip=mc[1], hostname=[2])
+        new_machine = Machine(dbid=mc[0], ip=mc[1], hostname=mc[2])
         return new_machine
 
     def get_image(self, image_id):
@@ -226,7 +226,7 @@ class Database:
         """
         self.cursor.execute(sql.select_all_from_regkeyvalue_by_id, key_value_id)
         kv = self.cursor.fetchone()
-        new_key_value = Key(dbid=kv[0], name=kv[2], type=kv[3], data=kv[4])
+        new_key_value = KeyValue(dbid=kv[0], name=kv[2], type=kv[3], data=kv[4])
         return new_key_value
 
     def get_image_list(self, machine_id=0):
@@ -264,5 +264,5 @@ class Database:
         kv_list = self.cursor.fetchall()
         new_keyvalue_list = []
         for item in kv_list:
-            new_keyvalue_list.append(Key(dbid=item[0], name=item[2], type=item[3], data=item[4]))
+            new_keyvalue_list.append(KeyValue(dbid=item[0], name=item[2], type=item[3], data=item[4]))
 
