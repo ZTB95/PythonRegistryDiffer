@@ -4,6 +4,7 @@ from PythonRegistryDiffer.machine import Machine
 from PythonRegistryDiffer.image import Image
 from PythonRegistryDiffer.key import Key
 from PythonRegistryDiffer.keyvalue import KeyValue
+from datetime import datetime as dt
 
 
 class TestCreateDatabase(unittest.TestCase):
@@ -33,34 +34,63 @@ class TestCreateDatabase(unittest.TestCase):
 
 
 class TestDatabase(unittest.TestCase):
-
     @classmethod
     def setUp(cls):
         cls._dbm = Database(location=':memory:', auto_commit=True)
         cls._dbf = Database(location='testfile.db', auto_commit=True)
 
+    @classmethod
+    def tearDown(cls):
+        cls._dbm.close()
+        cls._dbf.close()
+        # just in case? Should ever actually need this. close() should be called if a context manager errors out
+
+    # TODO: Third
     def test_open_database(self):
         self._dbm.open()
         self._dbf.open()
-        
+        self._machine = Machine(ip='127.0.0.1', hostname='localhost')
+        self._image = Image(taken_time=dt.now(), label='test-image', machine=0)
+        self._key = Key(key_path='HKEY_CLASSES_ROOT\\Test\\', modified=12345678, name='Test', dbid=1, values=[1, 2, 3])
+        self._keyvalue = KeyValue(name='KeyVal', type=2, data='data', dbid=1)
+
     def test_database_with_context_manager(self):
-        m = Machine(ip='127.0.0.1', hostname='localhost')
         with self._dbm as db:
-            db.add_machine(machine=m)
+            db.add_machine(machine=self.mac)
             # Not actually testing the add_machine here. Just making sure the context manager works.
 
         with self._dbf as db:
-            db.add_machine(machine=m)
+            db.add_machine(machine=self.mac)
             # Not actually testing the add_machine here. Just making sure the context manager works.
 
-    def test_database_insert_functions(self):
+    def test_database_insert_machine(self):
+        self._dbf.add_machine(self._machine)
+        self._dbm.add_machine(self._machine)
+
+    def test_database_insert_image(self):
+        self._dbf.add_image(self._image)
+        self._dbm.add_image(self._image)
+
+    def test_database_insert_key(self):
+        self._dbf.add_key(self._key)
+        self._dbm.add_key(self._key)
+
+    def test_database_insert_key_value(self):
+        self._dbf.add_key_value(self._keyvalue)
+        self._dbm.add_key_value(self._keyvalue)
+
+    def test_database_select_functions(self):
         pass
 
     def test_database_select_functions(self):
         pass
 
-    @classmethod
-    def tearDown(cls):
-        cls._dbm.close()
-        cls._dbf.close()
-        # just in case? Should ever actually need this. close() should be called if it errors out because __exit__ calls it
+    def test_database_select_functions(self):
+        pass
+
+    def test_database_select_functions(self):
+        pass
+
+    def test_database_select_functions(self):
+        pass
+
