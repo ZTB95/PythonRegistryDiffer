@@ -26,6 +26,9 @@ class Database:
         self.hku = hku
         self.hkcr = hkcr
         self.hkcc = hkcc
+        if self.hkeys == (False, False, False, False, False):
+            raise ValueError('All HKEYs were set to false.')
+
         self.location = location
 
         # Defined in self.open() (or __enter__())
