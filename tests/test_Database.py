@@ -29,8 +29,8 @@ class TestCreateDatabase(unittest.TestCase):
         self.assertEqual(db.hkcc, True)
 
     def test_create_database_memory_true_no_keys(self):
-        self.assertRaises(ValueError, Database(location=':memory:', auto_commit=True, hklm=False, hkcr=False,
-                                               hkcu=False, hku=False, hkcc=False))
+        with self.assertRaises(ValueError):
+            Database(location=':memory:', auto_commit=True, hklm=False, hkcr=False, hkcu=False, hku=False, hkcc=False)
 
 
 class TestDatabase(unittest.TestCase):
@@ -135,7 +135,7 @@ class TestDatabase(unittest.TestCase):
         self.assertEqual(xm.type, self._keyvalue.type)
         self.assertEqual(xm.data, self._keyvalue.data)
         self.assertEqual(xm.dbid, 1)
-        
+
     # TODO: SELECT LIST OF X FUNCTION TESTING.
     # TODO: Test getting a key that doesn't exist.
     # TODO: Test different data types for KeyValues

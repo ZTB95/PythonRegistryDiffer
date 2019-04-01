@@ -112,7 +112,7 @@ class Database:
             self.hkcr = bool(hkeys[0][4])
             self.hkcc = bool(hkeys[0][5])
         else:
-            self.cursor.execute(sql.create_database)
+            self._create_database()
             self.cursor.execute(sql.insert_hkeys, self.hkeys)
             self.connection.commit()
 
@@ -270,3 +270,11 @@ class Database:
         for item in kv_list:
             new_keyvalue_list.append(KeyValue(dbid=item[0], name=item[2], type=item[3], data=item[4]))
 
+    def _create_database(self):
+        self.cursor.execute(sql.create_machine_table)
+        self.cursor.execute(sql.create_image_table)
+        self.cursor.execute(sql.create_key_table)
+        self.cursor.execute(sql.create_key_value_table)
+        self.cursor.execute(sql.create_hkeys_table)
+        self.cursor.execute(sql.create_only_one_hkey_trigger)
+        self.cursor.execute(sql.enforce_foreign_keys)
