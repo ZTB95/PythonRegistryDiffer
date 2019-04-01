@@ -91,8 +91,8 @@ class TestDatabase(unittest.TestCase):
         self.assertEqual(xm.dbid, 1)
 
     def test_database_select_image(self):
-        xf = self._dbf.get_image(0)
-        xm = self._dbm.get_image(0)
+        xf = self._dbf.get_image(1)
+        xm = self._dbm.get_image(1)
 
         self.assertEqual(xf.machine, self._image.machine)
         self.assertEqual(xf.taken_time, self._image.taken_time)
@@ -104,12 +104,41 @@ class TestDatabase(unittest.TestCase):
         self.assertEqual(xm.label, self._image.label)
         self.assertEqual(xm.dbid, 1)
 
-    def test_database_select_functions(self):
-        pass
+    def test_database_select_key(self):
+        xf = self._dbf.get_key(1)
+        xm = self._dbm.get_key(1)
+
+        self.assertEqual(xf.name, self._key.name)
+        self.assertEqual(xf.modified, self._key.modified)
+        self.assertEqual(xf.key_path, self._key.key_path)
+        self.assertEqual(xf.values, self._key.key_path)
+        self.assertEqual(xf.has_values, self._key.has_values)
+        self.assertEqual(xf.dbid, 1)
+
+        self.assertEqual(xm.name, self._key.name)
+        self.assertEqual(xm.modified, self._key.modified)
+        self.assertEqual(xm.key_path, self._key.key_path)
+        self.assertEqual(xm.values, self._key.key_path)
+        self.assertEqual(xm.has_values, self._key.has_values)
+        self.assertEqual(xm.dbid, 1)
 
     def test_database_select_functions(self):
-        pass
+        xf = self._dbf.get_key_value(1)
+        xm = self._dbm.get_key_value(1)
 
-    def test_database_select_functions(self):
-        pass
+        self.assertEqual(xf.name, self._keyvalue.name)
+        self.assertEqual(xf.type, self._keyvalue.type)
+        self.assertEqual(xf.data, self._keyvalue.data)
+        self.assertEqual(xf.dbid, 1)
+
+        self.assertEqual(xm.name, self._keyvalue.name)
+        self.assertEqual(xm.type, self._keyvalue.type)
+        self.assertEqual(xm.data, self._keyvalue.data)
+        self.assertEqual(xm.dbid, 1)
+        
+    # TODO: SELECT LIST OF X FUNCTION TESTING.
+    # TODO: Test getting a key that doesn't exist.
+    # TODO: Test different data types for KeyValues
+    # TODO: Test large data for KeyValue; including data that's more than 1MB
+
 
