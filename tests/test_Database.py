@@ -1,10 +1,10 @@
 import unittest
+from datetime import datetime as dt
 from PythonRegistryDiffer.database import Database
 from PythonRegistryDiffer.machine import Machine
 from PythonRegistryDiffer.image import Image
 from PythonRegistryDiffer.key import Key
 from PythonRegistryDiffer.keyvalue import KeyValue
-from datetime import datetime as dt
 
 
 class TestCreateDatabase(unittest.TestCase):
@@ -34,25 +34,25 @@ class TestCreateDatabase(unittest.TestCase):
 
 
 class TestDatabase(unittest.TestCase):
+
     @classmethod
     def setUp(cls):
         cls._dbm = Database(location=':memory:', auto_commit=True)
         cls._dbf = Database(location='testfile.db', auto_commit=True)
 
+        cls._machine = Machine(ip='127.0.0.1', hostname='localhost')
+        cls._image = Image(taken_time=dt.now(), label='test-image', machine=1)
+        cls._key = Key(key_path='HKEY_CLASSES_ROOT\\Test\\', modified=12345678, name='Test', values=[1, 2, 3])
+        cls._keyvalue = KeyValue(name='KeyVal', type=2, data='data')
+
     @classmethod
     def tearDown(cls):
-        cls._dbm.close()
-        cls._dbf.close()
-        # just in case? Should ever actually need this. close() should be called if a context manager errors out
+        pass
 
     # TODO: Third
     def test_open_database(self):
         self._dbm.open()
         self._dbf.open()
-        self._machine = Machine(ip='127.0.0.1', hostname='localhost')
-        self._image = Image(taken_time=dt.now(), label='test-image', machine=1)
-        self._key = Key(key_path='HKEY_CLASSES_ROOT\\Test\\', modified=12345678, name='Test', values=[1, 2, 3])
-        self._keyvalue = KeyValue(name='KeyVal', type=2, data='data')
 
     def test_database_with_context_manager(self):
         with self._dbm as db:
@@ -71,28 +71,38 @@ class TestDatabase(unittest.TestCase):
         self._dbm.add_image(self._image)
 
     def test_database_insert_key(self):
-        self._dbf.add_key(self._key)
-        self._dbm.add_key(self._key)
+        self._dbf.add_key(1, self._key)
+        self._dbm.add_key(1, self._key)
 
     def test_database_insert_key_value(self):
-        self._dbf.add_key_value(self._keyvalue)
-        self._dbm.add_key_value(self._keyvalue)
+        self._dbf.add_key_value(1, self._keyvalue)
+        self._dbm.add_key_value(1, self._keyvalue)
 
-    def test_database_select_functions(self):
-        xf = self._dbf.get_machine(0)
-        xm = self._dbm.get_machine(0)
+    def test_database_select_machine(self):
+        xf = self._dbf.get_machine(1)
+        xm = self._dbm.get_machine(1)
 
         self.assertEqual(xf.hostname, self._machine.hostname)
         self.assertEqual(xf.last_ip, self._machine.hostname)
-        self.assertEqual(xf.dbid, 0)
+        self.assertEqual(xf.dbid, 1)
 
         self.assertEqual(xm.hostname, self._machine.hostname)
         self.assertEqual(xm.last_ip, self._machine.last_ip)
-        self.assertEqual(xm.dbid, 0)
+        self.assertEqual(xm.dbid, 1)
 
+    def test_database_select_image(self):
+        xf = self._dbf.get_image(0)
+        xm = self._dbm.get_image(0)
 
-    def test_database_select_functions(self):
-        pass
+        self.assertEqual(xf.machine, self._image.machine)
+        self.assertEqual(xf.taken_time, self._image.taken_time)
+        self.assertEqual(xf.label, self._image.label)
+        self.assertEqual(xf.dbid, 1)
+
+        self.assertEqual(xm.machine, self._image.machine)
+        self.assertEqual(xm.taken_time, self._image.taken_time)
+        self.assertEqual(xm.label, self._image.label)
+        self.assertEqual(xm.dbid, 1)
 
     def test_database_select_functions(self):
         pass

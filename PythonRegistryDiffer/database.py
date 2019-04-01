@@ -125,6 +125,7 @@ class Database:
                 self.connection.rollback()
 
             self.connection.close()
+            self.connection.close()
         self.connection = None  # In case self.close gets called before self.open, for whatever reason.
 
     def add_machine(self, machine):
