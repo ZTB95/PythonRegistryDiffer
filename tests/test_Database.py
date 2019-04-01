@@ -50,18 +50,17 @@ class TestDatabase(unittest.TestCase):
         self._dbm.open()
         self._dbf.open()
         self._machine = Machine(ip='127.0.0.1', hostname='localhost')
-        self._image = Image(taken_time=dt.now(), label='test-image', machine=0)
-        self._key = Key(key_path='HKEY_CLASSES_ROOT\\Test\\', modified=12345678, name='Test', dbid=1, values=[1, 2, 3])
-        self._keyvalue = KeyValue(name='KeyVal', type=2, data='data', dbid=1)
+        self._image = Image(taken_time=dt.now(), label='test-image', machine=1)
+        self._key = Key(key_path='HKEY_CLASSES_ROOT\\Test\\', modified=12345678, name='Test', values=[1, 2, 3])
+        self._keyvalue = KeyValue(name='KeyVal', type=2, data='data')
 
     def test_database_with_context_manager(self):
         with self._dbm as db:
-            db.add_machine(machine=self.mac)
+            db.add_machine(machine=self._machine)
             # Not actually testing the add_machine here. Just making sure the context manager works.
 
         with self._dbf as db:
-            db.add_machine(machine=self.mac)
-            # Not actually testing the add_machine here. Just making sure the context manager works.
+            db.add_machine(machine=self._machine)
 
     def test_database_insert_machine(self):
         self._dbf.add_machine(self._machine)
@@ -80,7 +79,17 @@ class TestDatabase(unittest.TestCase):
         self._dbm.add_key_value(self._keyvalue)
 
     def test_database_select_functions(self):
-        pass
+        xf = self._dbf.get_machine(0)
+        xm = self._dbm.get_machine(0)
+
+        self.assertEqual(xf.hostname, self._machine.hostname)
+        self.assertEqual(xf.last_ip, self._machine.hostname)
+        self.assertEqual(xf.dbid, 0)
+
+        self.assertEqual(xm.hostname, self._machine.hostname)
+        self.assertEqual(xm.last_ip, self._machine.last_ip)
+        self.assertEqual(xm.dbid, 0)
+
 
     def test_database_select_functions(self):
         pass
