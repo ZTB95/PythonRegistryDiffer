@@ -46,7 +46,7 @@ class Database:
 
     @property
     def hkeys(self):
-        hkey_tuple = (self.hkcr, self.hkcu, self.hku, self.hkcr, self.hkcc)
+        hkey_tuple = (self.hklm, self.hkcu, self.hku, self.hkcr, self.hkcc)
         return hkey_tuple
 
     @property
