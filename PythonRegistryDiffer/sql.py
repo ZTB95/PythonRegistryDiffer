@@ -103,8 +103,7 @@ select_newest_in_regkeyvalue = ('SELECT * '
                                 'WHERE id=(SELECT MAX(id) from RegKeyValue) ')
 
 select_hkeys = ('SELECT * '
-                'FROM hkeys'
-                'WHERE id=(SELECT MAX(id) from hkeys) ')
+                'FROM hkeys ')
 
 # INSERTS
 insert_into_machine = 'INSERT INTO Machine VALUES (?, ?)'  # TODO: Specify columns for all of these...
