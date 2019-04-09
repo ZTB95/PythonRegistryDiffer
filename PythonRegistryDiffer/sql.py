@@ -106,9 +106,9 @@ select_hkeys = ('SELECT * '
                 'FROM hkeys ')
 
 # INSERTS
-insert_into_machine = 'INSERT INTO Machine (lastKnownIP, hostname) VALUES (?, ?)'  # TODO: Specify columns for all of these...
+insert_into_machine = 'INSERT INTO Machine(lastKnownIP, hostname) VALUES (?, ?)'  # TODO: Specify columns for all of these...
 
-insert_into_regimage = 'INSERT INTO RegImage VALUES (?, ?, ?)'
+insert_into_regimage = 'INSERT INTO RegImage(machineId, label, timeTaken) VALUES (?, ?, ?)'
 
 insert_into_regkey = 'INSERT INTO RegKey VALUES (?, ?, ?, ?)'
 

@@ -77,6 +77,7 @@ class TestDatabase(unittest.TestCase):
 
     def test_database_insert_image(self):
         self._dbf.add_image(self._image)
+        self._dbm.add_machine(self._machine)
         self._dbm.add_image(self._image)
 
     def test_database_insert_key(self):
