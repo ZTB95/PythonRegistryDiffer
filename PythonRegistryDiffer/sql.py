@@ -17,9 +17,11 @@ create_key_table = ('CREATE TABLE RegKey ( '
                     'id INTEGER PRIMARY KEY, '
                     'regImageId INTEGER, '
                     'path VARCHAR(256) NOT NULL , '
-                    'lastModified DATETIME NOT NULL, '
+                    'lastModified DATETIME NOT NULL,'
+                    'name VARCHAR(256) NOT NULL, '
                     'FOREIGN KEY(regImageId) REFERENCES RegImage(id) '
-                    ');\n')  # TODO: Remove the name column from the DBD and update the table's name
+                    ');\n')  # TODO: update the table's name
+                    # TODO: alter the entire app to get RegKey's name from its path - it's already there.
 
 create_key_value_table = ('CREATE TABLE RegKeyValue ( '  # TODO: Update the table's name in the DBD
                           'id INTEGER PRIMARY KEY, '
@@ -110,8 +112,8 @@ insert_into_machine = 'INSERT INTO Machine(lastKnownIP, hostname) VALUES (?, ?)'
 
 insert_into_regimage = 'INSERT INTO RegImage(machineId, label, timeTaken) VALUES (?, ?, ?)'
 
-insert_into_regkey = 'INSERT INTO RegKey VALUES (?, ?, ?, ?)'
+insert_into_regkey = 'INSERT INTO RegKey(regImageId, path, lastModified, name) VALUES (?, ?, ?, ?)'
 
-insert_into_regkeyvalue = 'INSERT INTO RegKeyValue VALUES (?, ?, ?, ?)'
+insert_into_regkeyvalue = 'INSERT INTO RegKeyValue(regKeyId, name, type, data) VALUES (?, ?, ?, ?)'
 
 insert_hkeys = 'INSERT INTO HKEYs(hklm, hkcu, hku, hkcr, hkcc) VALUES (?, ?, ?, ?, ?)'
