@@ -36,7 +36,7 @@ class TestCreateDatabase(unittest.TestCase):
 class TestDatabase(unittest.TestCase):
 
     @classmethod
-    def setUp(cls):
+    def setUpClass(cls):
         cls._dbm = Database(location=':memory:', auto_commit=True)
         cls._dbf = Database(location='testfile.db', auto_commit=True)
 
@@ -45,11 +45,20 @@ class TestDatabase(unittest.TestCase):
         cls._key = Key(key_path='HKEY_CLASSES_ROOT\\Test\\', modified=12345678, name='Test', values=[1, 2, 3])
         cls._keyvalue = KeyValue(name='KeyVal', type=2, data='data')
 
+
     @classmethod
-    def tearDown(cls):
+    def tearDownClass(cls):
         pass
 
+    def setUp(self):
+        self._dbf.open()
+        self._dbm.open()
+
+    def tearDown(self):
+        self._dbf.close()
+        self._dbm.close()
     # TODO: Third
+
     def test_open_database(self):
         self._dbm.open()
         self._dbf.open()
