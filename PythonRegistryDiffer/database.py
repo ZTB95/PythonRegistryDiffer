@@ -197,6 +197,7 @@ class Database:
         """
         self.cursor.execute(sql.select_all_from_machine_by_id, (machine_id,))
         mc = self.cursor.fetchone()
+        # TODO: throw an error to the user if there's nothing in here.
         new_machine = Machine(dbid=mc[0], ip=mc[1], hostname=mc[2])
         return new_machine
 
@@ -208,6 +209,7 @@ class Database:
         """
         self.cursor.execute(sql.select_all_from_regimage_by_id, (image_id,))
         im = self.cursor.fetchone()
+        # TODO: throw an error to the user if there's nothing in here.
         new_image = Image(dbid=im[0], taken_time=im[3], label=im[2], machine=im[1])  # TODO: Verify what data types are coming out of these queries...
         return new_image
 
@@ -219,6 +221,7 @@ class Database:
         """
         self.cursor.execute(sql.select_all_from_regkey_by_id, (key_id,))
         ky = self.cursor.fetchone()
+        # TODO: throw an error to the user if there's nothing in here.
         new_key = Key(dbid=ky[0], key_path=ky[2], modified=ky[3], name=ky[4])
         return new_key
 
@@ -228,9 +231,9 @@ class Database:
         :param key_value_id: The database ID of the key_value to get.
         :return: KeyValue instance or False
         """
-        pass
         self.cursor.execute(sql.select_all_from_regkeyvalue_by_id, (key_value_id,))
         kv = self.cursor.fetchone()
+        # TODO: throw an error to the user if there's nothing in here.
         new_key_value = KeyValue(dbid=kv[0], name=kv[2], type=kv[3], data=kv[4])
         return new_key_value
 

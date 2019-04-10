@@ -97,6 +97,8 @@ class TestDatabase(unittest.TestCase):
         self._dbm.add_key_value(1, self._keyvalue)
 
     def test_database_select_machine(self):
+        self._dbm.add_machine(self._machine)
+
         xf = self._dbf.get_machine(1)
         xm = self._dbm.get_machine(1)
 
@@ -109,6 +111,9 @@ class TestDatabase(unittest.TestCase):
         self.assertEqual(xm.dbid, 1)
 
     def test_database_select_image(self):
+        self._dbm.add_machine(self._machine)
+        self._dbm.add_image(self._image)
+
         xf = self._dbf.get_image(1)
         xm = self._dbm.get_image(1)
 
@@ -123,6 +128,10 @@ class TestDatabase(unittest.TestCase):
         self.assertEqual(xm.dbid, 1)
 
     def test_database_select_key(self):
+        self._dbm.add_machine(self._machine)
+        self._dbm.add_image(self._image)
+        self._dbm.add_key(1, self._key)
+
         xf = self._dbf.get_key(1)
         xm = self._dbm.get_key(1)
 
@@ -140,7 +149,12 @@ class TestDatabase(unittest.TestCase):
         self.assertEqual(xm.has_values, self._key.has_values)
         self.assertEqual(xm.dbid, 1)
 
-    def test_database_select_functions(self):
+    def test_database_select_key_value(self):
+        self._dbm.add_machine(self._machine)
+        self._dbm.add_image(self._image)
+        self._dbm.add_key(1, self._key)
+        self._dbm.add_key_value(1, self._keyvalue)
+        
         xf = self._dbf.get_key_value(1)
         xm = self._dbm.get_key_value(1)
 
