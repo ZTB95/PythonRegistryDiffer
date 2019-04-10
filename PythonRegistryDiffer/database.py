@@ -195,7 +195,7 @@ class Database:
         :param machine_id: The ID of the machine to get.
         :return: An instance of the Machine class.
         """
-        self.cursor.execute(sql.select_all_from_machine_by_id, machine_id)
+        self.cursor.execute(sql.select_all_from_machine_by_id, (machine_id,))
         mc = self.cursor.fetchone()
         new_machine = Machine(dbid=mc[0], ip=mc[1], hostname=mc[2])
         return new_machine
@@ -206,7 +206,7 @@ class Database:
         :param image_id: The database ID of the image to get.
         :return: Image instance or False
         """
-        self.cursor.execute(sql.select_all_from_regimage_by_id, image_id)
+        self.cursor.execute(sql.select_all_from_regimage_by_id, (image_id,))
         im = self.cursor.fetchone()
         new_image = Image(dbid=im[0], taken_time=im[3], label=im[2], machine=im[1])  # TODO: Verify what data types are coming out of these queries...
         return new_image
@@ -217,7 +217,7 @@ class Database:
         :param key_id: The database ID of the key to get.
         :return: Key Instance or False
         """
-        self.cursor.execute(sql.select_all_children_of_regkey_by_id, key_id)
+        self.cursor.execute(sql.select_all_from_regkey_by_id, (key_id,))
         ky = self.cursor.fetchone()
         new_key = Key(dbid=ky[0], key_path=ky[2], modified=ky[3], name=ky[4])
         return new_key
@@ -228,7 +228,8 @@ class Database:
         :param key_value_id: The database ID of the key_value to get.
         :return: KeyValue instance or False
         """
-        self.cursor.execute(sql.select_all_from_regkeyvalue_by_id, key_value_id)
+        pass
+        self.cursor.execute(sql.select_all_from_regkeyvalue_by_id, (key_value_id,))
         kv = self.cursor.fetchone()
         new_key_value = KeyValue(dbid=kv[0], name=kv[2], type=kv[3], data=kv[4])
         return new_key_value

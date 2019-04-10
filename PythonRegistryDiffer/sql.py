@@ -55,27 +55,27 @@ enforce_foreign_keys = 'PRAGMA foreign_keys = 1'
 # SELECTS
 select_all_from_machine_by_id = ('SELECT * '
                                  'FROM Machine '
-                                 'WHERE id =?')
+                                 'WHERE id = ?')
 
 select_all_from_regimage_by_id = ('SELECT * '
                                   'FROM RegImage '
-                                  'WHERE id=? ')
+                                  'WHERE id = ? ')
 
 select_all_from_regkey_by_id = ('SELECT * '
                                 'FROM RegKey '
-                                'WHERE id=?')
+                                'WHERE id = ? ')
 
 select_all_from_regkeyvalue_by_id = ('SELECT * '
                                      'FROM RegKeyValue '
-                                     'WHERE id=? ')
+                                     'WHERE id = ? ')
 
 select_all_from_hkeys_by_id = ('SELECT * '
                                'FROM HKEYs '
-                               'WHERE i =? ')
+                               'WHERE i = ? ')
 
 select_all_children_of_machine_by_id = ('SELECT * '
                                         'FROM RegImage '
-                                        'WHERE machineId=? ')
+                                        'WHERE machineId= ? ')
 
 select_all_children_of_machine = ('SELECT * '
                                   'FROM RegImage ')
