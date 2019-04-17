@@ -18,7 +18,7 @@ class KeyValue(bc.RegistryObject):
     def __eq__(self, other):
         return self.name == other.name and \
                self.type == other.type and \
-               self.data == other.date
+               self.data == other.data
 
     @property
     def name(self):

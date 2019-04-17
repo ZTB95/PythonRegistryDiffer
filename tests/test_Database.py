@@ -42,9 +42,8 @@ class TestDatabase(unittest.TestCase):
 
         cls._machine = Machine(ip='127.0.0.1', hostname='localhost')
         cls._image = Image(taken_time=dt.now(), label='test-image', machine=1)
-        cls._key = Key(key_path='HKEY_CLASSES_ROOT\\Test\\', modified=12345678, name='Test', values=[1, 2, 3])
         cls._keyvalue = KeyValue(name='KeyVal', type=2, data='data')
-
+        cls._key = Key(key_path='HKEY_CLASSES_ROOT\\Test\\', modified=12345678, name='Test', values=[cls._keyvalue])
 
     @classmethod
     def tearDownClass(cls):
@@ -104,7 +103,7 @@ class TestDatabase(unittest.TestCase):
         xm = self._dbm.get_machine(1)
 
         self.assertEqual(xf.hostname, self._machine.hostname)
-        self.assertEqual(xf.last_ip, self._machine.hostname)
+        self.assertEqual(xf.last_ip, self._machine.last_ip)
         self.assertEqual(xf.dbid, 1)
 
         self.assertEqual(xm.hostname, self._machine.hostname)
@@ -132,21 +131,27 @@ class TestDatabase(unittest.TestCase):
         self._dbm.add_machine(self._machine)
         self._dbm.add_image(self._image)
         self._dbm.add_key(1, self._key)
+        self._dbm.add_key_value(1, self._keyvalue)
 
         xf = self._dbf.get_key(1)
         xm = self._dbm.get_key(1)
 
+        xf.values = self._dbf.get_key_value_list(1)
+        xm.values = self._dbm.get_key_value_list(1)
+
         self.assertEqual(xf.name, self._key.name)
         self.assertEqual(xf.modified, self._key.modified)
         self.assertEqual(xf.key_path, self._key.key_path)
-        self.assertEqual(xf.values, self._key.key_path)
+        self.assertEqual(xf.values, self._key.values)
         self.assertEqual(xf.has_values, self._key.has_values)
         self.assertEqual(xf.dbid, 1)
 
         self.assertEqual(xm.name, self._key.name)
         self.assertEqual(xm.modified, self._key.modified)
         self.assertEqual(xm.key_path, self._key.key_path)
-        self.assertEqual(xm.values, self._key.key_path)
+        print(xm.values)
+        print(self._key.values)
+        self.assertEqual(xm.values, self._key.values)
         self.assertEqual(xm.has_values, self._key.has_values)
         self.assertEqual(xm.dbid, 1)
 

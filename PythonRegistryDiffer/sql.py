@@ -71,7 +71,7 @@ select_all_from_regkeyvalue_by_id = ('SELECT * '
 
 select_all_from_hkeys_by_id = ('SELECT * '
                                'FROM HKEYs '
-                               'WHERE i = ? ')
+                               'WHERE id = ? ')
 
 select_all_children_of_machine_by_id = ('SELECT * '
                                         'FROM RegImage '
@@ -86,7 +86,7 @@ select_all_children_of_regimage_by_id = ('SELECT * '
 
 select_all_children_of_regkey_by_id = ('SELECT * '
                                        'FROM RegKeyValue '
-                                       'WHERE regKeyId=? ')
+                                       'WHERE regKeyId = ? ')
 
 select_newest_in_machine = ('SELECT * '
                             'FROM Machine'

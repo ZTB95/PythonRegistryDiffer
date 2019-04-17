@@ -268,11 +268,12 @@ class Database:
         :param key_id: The DBID of the specific Key's KeyValues.
         :return: A list of KeyValue instances
         """
-        self.cursor.execute(sql.select_all_children_of_regkey_by_id, key_id)
+        self.cursor.execute(sql.select_all_children_of_regkey_by_id, (key_id,))
         kv_list = self.cursor.fetchall()
         new_keyvalue_list = []
         for item in kv_list:
             new_keyvalue_list.append(KeyValue(dbid=item[0], name=item[2], type=item[3], data=item[4]))
+        return new_keyvalue_list
 
     def _create_database(self):
         self.cursor.execute(sql.create_machine_table)
