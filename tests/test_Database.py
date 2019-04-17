@@ -76,6 +76,7 @@ class TestDatabase(unittest.TestCase):
         self._dbm.add_machine(self._machine)
 
     def test_database_insert_image(self):
+        self.test_database_insert_machine()
         self._dbf.add_image(self._image)
 
         self._dbm.add_machine(self._machine)
@@ -118,12 +119,12 @@ class TestDatabase(unittest.TestCase):
         xm = self._dbm.get_image(1)
 
         self.assertEqual(xf.machine, self._image.machine)
-        self.assertEqual(xf.taken_time, self._image.taken_time)
+        self.assertEqual(str(xf.taken_time), str(self._image.taken_time))
         self.assertEqual(xf.label, self._image.label)
         self.assertEqual(xf.dbid, 1)
 
         self.assertEqual(xm.machine, self._image.machine)
-        self.assertEqual(xm.taken_time, self._image.taken_time)
+        self.assertEqual(str(xm.taken_time), str(self._image.taken_time))
         self.assertEqual(xm.label, self._image.label)
         self.assertEqual(xm.dbid, 1)
 
@@ -154,7 +155,7 @@ class TestDatabase(unittest.TestCase):
         self._dbm.add_image(self._image)
         self._dbm.add_key(1, self._key)
         self._dbm.add_key_value(1, self._keyvalue)
-        
+
         xf = self._dbf.get_key_value(1)
         xm = self._dbm.get_key_value(1)
 
