@@ -149,8 +149,6 @@ class TestDatabase(unittest.TestCase):
         self.assertEqual(xm.name, self._key.name)
         self.assertEqual(xm.modified, self._key.modified)
         self.assertEqual(xm.key_path, self._key.key_path)
-        print(xm.values)
-        print(self._key.values)
         self.assertEqual(xm.values, self._key.values)
         self.assertEqual(xm.has_values, self._key.has_values)
         self.assertEqual(xm.dbid, 1)
