@@ -112,7 +112,7 @@ def get_key(parent_key_handle, key_name, key_path):
     return retd
 
 
-def get_all_subkeys(key_handle, key_name):
+def get_all_subkeys(r_key_handle, r_key_name):
     """
     Creates a list of all subkeys of a key (and their values). Uses instances of Key and KeyValue
     :param key_handle: An established winreg registry key handle.
@@ -125,9 +125,12 @@ def get_all_subkeys(key_handle, key_name):
     }
 
     # I took this from my prototype edition of this program that was all inside of 2 files and completely hacked
-    # together. It used to just get the string names, but not It's hacked at even more to get it to fit in here.
+    # together. It used to just get the string names, but not It's hacked slightly more to get it to fit in here.
     # Forgive me...
-    # TODO make this not a pile of steaming hot garbage with sewage on top. Maybe just take off the sewage.
+    # TODO make this not a pile of steaming hot garbage with sewage on top. Maybe just clean up the sewage spill...
+
+    recursion_level = 1  # keep recursion issues at bay... maybe
+
     def get_sub_key_list(key_handle, key_name):
         """
         Creates a list of all subkeys of a key (and their values). Uses instances of Key and KeyValue
@@ -135,11 +138,23 @@ def get_all_subkeys(key_handle, key_name):
         :param key_name: The string name of the key.
         :return: None (appends to retd)`
         """
+        global recursion_level
+
+        if recursion_level > 512:
+            raise RecursionError(
+                'Something went wrong while trying to get a list of subkeys. Exceeded 512 keys.\nLast key: {}'.format(
+                    key_name)
+            )
 
         cur_key_info = wreg.QueryInfoKey(key_handle)
         _key_list = []
+        subkey_num = cur_key_info[0]  # number of subkeys
 
-        for i in range(cur_key_info[0]):  # for each sub-key
+        if subkey_num == 0:
+            recursion_level -= 1
+            return
+
+        for i in range(subkey_num):  # for each sub-key
             reg2 = wreg.EnumKey(key_handle, i)  # get the subkey's name
 
             key_location = '{}{}\\'.format(key_name, reg2)  # reconstruct its location
@@ -152,12 +167,14 @@ def get_all_subkeys(key_handle, key_name):
                 retd['errors'].extend(new_key['errors'])
 
             try:
+                recursion_level += 1
                 get_sub_key_list(wreg.OpenKey(key_handle, reg2), key_location)
             except WindowsError:
                 retd['errors'].append(WindowsError('Permissions error trying to access key: {}'.format(key_location)))
+                recursion_level -= 1
         # Don't close the key in this function; it might still be in use by the caller.
 
-    get_sub_key_list(key_handle, key_name)
+    get_sub_key_list(r_key_handle, r_key_name)
 
     return retd
 
