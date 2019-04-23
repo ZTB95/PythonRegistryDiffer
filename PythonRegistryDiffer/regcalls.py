@@ -90,8 +90,8 @@ def get_key(parent_key_handle, key_name, key_path):
 
         key_val_dict = get_all_key_values(new_key_handle)  # run get_all_key_values and save the dict
         key_values = key_val_dict['data']  # get the data out (List of KeyValues or empty list)
-        if len(key_values['errors']) > 0:  # if errors occurred while getting key values, pass them up.
-            retd['errors'].extend(key_values['errors'])
+        if len(key_val_dict['errors']) > 0:  # if errors occurred while getting key values, pass them up.
+            retd['errors'].extend(key_val_dict['errors'])
 
         # Crate the new Key dictionary
         new_key_dict = {
@@ -106,23 +106,63 @@ def get_key(parent_key_handle, key_name, key_path):
         retd['data'] = new_key  # add the new Key instance to the return dictionary
 
     except Exception:  # TODO finish
-        retd['errors'] = Exception
+        retd['errors'].append(Exception)
         raise Exception  # DEBUG TODO remove
 
     return retd
 
 
-def get_all_sub_keys(keypath):
+def get_all_subkeys(key_handle, key_name):
     """
-    Creates a list of all subkeys of a key. Each key will be represented by its complete path, including HKEY.
-    :param keypath: The key whose sub-keys you want to get. Can be an HKEY.
-    :param computer: The computer whose registry you want to query.
-    :return: A dictionary with the values 'errors' & 'data'. 'data' will be a list of complete key paths.
+    Creates a list of all subkeys of a key (and their values). Uses instances of Key and KeyValue
+    :param key_handle: An established winreg registry key handle.
+    :param key_name: The string name of the key.
+    :return: A dictionary with the values 'errors' & 'data'. 'data' will be a list of complete key objects.
     """
-    pass
+    retd = {
+        'errors': [],  # dictionary to return
+        'data': None
+    }
+
+    # I took this from my prototype edition of this program that was all inside of 2 files and completely hacked
+    # together. It used to just get the string names, but not It's hacked at even more to get it to fit in here.
+    # Forgive me...
+    # TODO make this not a pile of steaming hot garbage with sewage on top. Maybe just take off the sewage.
+    def get_sub_key_list(key_handle, key_name):
+        """
+        Creates a list of all subkeys of a key (and their values). Uses instances of Key and KeyValue
+        :param key_handle: An established winreg registry key handle.
+        :param key_name: The string name of the key.
+        :return: None (appends to retd)`
+        """
+
+        cur_key_info = wreg.QueryInfoKey(key_handle)
+        _key_list = []
+
+        for i in range(cur_key_info[0]):  # for each sub-key
+            reg2 = wreg.EnumKey(key_handle, i)  # get the subkey's name
+
+            key_location = '{}{}\\'.format(key_name, reg2)  # reconstruct its location
+
+            new_key = get_key(key_handle, reg2, key_location)  # create a RegKey class instance (including KeyValues)
+
+            if len(new_key['errors']) == 0:
+                _key_list.append(new_key['data'])  # save the new key.
+            else:
+                retd['errors'].extend(new_key['errors'])
+
+            try:
+                get_sub_key_list(wreg.OpenKey(key_handle, reg2), key_location)
+            except WindowsError:
+                retd['errors'].append(WindowsError('Permissions error trying to access key: {}'.format(key_location)))
+        # Don't close the key in this function; it might still be in use by the caller.
+
+    get_sub_key_list(key_handle, key_name)
+
+    return retd
 
 
-def get_registry(machine):
+def get_registry_image(machine):
     """
     Returns a registry image object
     It will continue past any non-fatal registry errors.
