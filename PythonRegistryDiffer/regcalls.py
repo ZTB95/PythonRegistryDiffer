@@ -25,7 +25,7 @@ def get_key_value(key_handle, value_index):
             'data': values[1]
         }
 
-        retd['data'] = KeyValue(kv_dict)  # Create the new KeyValue and update the data key of the return dictionary
+        retd['data'] = KeyValue(**kv_dict)  # Create the new KeyValue and update the data key of the return dictionary
 
     except Exception:  # TODO Going to find out what errors I want to catch during testing; for now just rethrow them.
         retd['errors'].append(Exception)
@@ -101,7 +101,7 @@ def get_key(parent_key_handle, key_name, key_path):
             'name': key_name
         }
 
-        new_key = Key(new_key_dict)  # Create a new instance of Key with the new_key_dict
+        new_key = Key(**new_key_dict)  # Create a new instance of Key with the new_key_dict
 
         retd['data'] = new_key  # add the new Key instance to the return dictionary
 
@@ -112,11 +112,11 @@ def get_key(parent_key_handle, key_name, key_path):
     return retd
 
 
-def get_all_subkeys(r_key_handle, r_key_name):
+def get_all_sub_keys(r_key_handle, r_key_name):
     """
     Creates a list of all subkeys of a key (and their values). Uses instances of Key and KeyValue
-    :param key_handle: An established winreg registry key handle.
-    :param key_name: The string name of the key.
+    :param r_key_handle: An established winreg registry key handle.
+    :param r_key_name: The string name of the key.
     :return: A dictionary with the values 'errors' & 'data'. 'data' will be a list of complete key objects.
     """
     retd = {
@@ -183,7 +183,6 @@ def get_registry_image(machine):
     """
     Returns a registry image object
     It will continue past any non-fatal registry errors.
-    :param database: The database to add a registry image to.
     :param machine: The target machine.
-    :return: A list of errors (if any)
+    :return: A dictionary with the values 'errors' & 'data'. 'data' will be an Image instance.
     """
