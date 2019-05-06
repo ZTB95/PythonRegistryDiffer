@@ -11,6 +11,7 @@ class Image(bc.RegistryObject):
         self.taken_time = kwargs.get('taken_time')
         self.label = kwargs.get('label')
         self.machine = kwargs.get('machine')
+        self.keys = kwargs.get('keys')  # porperty-itize this ?
 
     @property
     def taken_time(self):

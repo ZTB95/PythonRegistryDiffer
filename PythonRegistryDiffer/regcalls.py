@@ -1,4 +1,5 @@
 import winreg as wreg
+import datetime as dt
 from .key import Key
 from .keyvalue import KeyValue
 from .image import Image
@@ -142,7 +143,7 @@ def get_all_sub_keys(r_key_handle, r_key_name):
 
         if recursion_level > 512:
             raise RecursionError(
-                'Something went wrong while trying to get a list of subkeys. Exceeded 512 keys.\nLast key: {}'.format(
+                'Recursion error while trying to get a list of subkeys. Depth > 512.\nLast key: {}'.format(
                     key_name)
             )
 
@@ -172,17 +173,61 @@ def get_all_sub_keys(r_key_handle, r_key_name):
             except WindowsError:
                 retd['errors'].append(WindowsError('Permissions error trying to access key: {}'.format(key_location)))
                 recursion_level -= 1
-        # Don't close the key in this function; it might still be in use by the caller.
 
     get_sub_key_list(r_key_handle, r_key_name)
 
     return retd
 
 
-def get_registry_image(machine):
+def get_registry_image(machine, hklm, hku, hkcu, hkcc, hkcr, label=''):
     """
     Returns a registry image object
     It will continue past any non-fatal registry errors.
     :param machine: The target machine.
+    :param hklm: Boolean - to get the HKLM Key or not.
+    :param hku: Boolean - to get the HKU Key or not.
+    :param hkcu: Boolean - to get the HKCU Key or not.
+    :param hkcc: Boolean - to get the HKCC Key or not.
+    :param hkcr: Boolean - to get the HKCR Key or not.
+    :param label: String - optional. Default is an empty string.
     :return: A dictionary with the values 'errors' & 'data'. 'data' will be an Image instance.
     """
+    retd = {  # dictionary to return
+        'errors': [],
+        'data': None
+    }
+    target_ip = ''  # the target IP. This is the machine who's registry will be enumerated.
+    image_params = {  # the parameters that will be passed into the Image instance.
+        'taken_time': dt.datetime.now(),
+        'machine': machine.dbid,
+        'label': label,
+        'keys': []
+    }
+
+    # Open the registry handle
+    if machine.hostname == 'localhost':
+        target_ip = None  # this is what winreg is expecting for localhost
+    else:
+        target_ip = '\\\\{}'.format(str(machine.last_ip))  # Winreg expects the format '\\<hostname>|<ip>' or None
+
+    # DRY enumeration for each HKEY TODO: Handle failed connection errors.
+    def enum_registry(hkey_root):
+        registry = wreg.ConnectRegistry(target_ip, hkey_root)  # Open the registry handle
+        enum_dict = get_all_sub_keys(registry, hkey_root)  # enumerate all of its subkeys
+        image_params['keys'].extend(enum_dict['data'])  # save the data
+        retd['errors'].extend(enum_dict['errors'])  # save the errors
+
+    # If an HKEY is set to True, enumerate it.
+    if hklm:
+        enum_registry(wreg. HKEY_LOCAL_MACHINE)
+    if hku:
+        enum_registry(wreg.HKEY_USERS)
+    if hkcu:
+        enum_registry(wreg.HKEY_CURRENT_USER)
+    if hkcc:
+        enum_registry(wreg.HKEY_CURRENT_CONFIG)
+    if hkcr:
+        enum_registry(wreg.HKEY_CLASSES_ROOT)
+
+    retd['data'] = Image(**image_params)
+    return retd
