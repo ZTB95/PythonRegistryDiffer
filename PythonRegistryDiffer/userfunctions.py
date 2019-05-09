@@ -1,3 +1,4 @@
+from .machine import Machine
 
 
 def new_database():
@@ -8,6 +9,19 @@ def new_image():
     pass
 
 
+def new_machine(ip, hostname, dbconn):
+    """
+    Creates a new machine in the database and returns and object.
+    :param ip: The IP address of the machine (can be None if hostname is not)
+    :param hostname: The hostname of the machine (can be None if IP is not).
+    :param dbconn: An open database connection.
+    :return: A machine object that was added to the database.
+    """
+    mach = Machine(**{'ip': ip, 'hostname': hostname})  # creates the machine object
+    db_mach = dbconn.add_machine(mach)  # inserts it into the database and saves the new copy that has it's DBID set
+    return db_mach
+
+    
 def list_images():
     pass
 
