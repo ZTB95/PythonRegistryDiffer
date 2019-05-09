@@ -27,19 +27,24 @@ def new_machine(ip, hostname, db):
     return db.add_machine(mach)  # inserts it into the database and return's the new machine's database ID
 
 
-def list_of_images():
-    pass
+def list_of_images(db, machine_id=0):
+    """
+    Gets a formatted list of images (as a string).
+    :param db: An open database object.
+    :param machine_id: Set this to a machine's ID to restrict the pull to a specific machine
+    :return: string
+    """
+    images = db.get_image_list()  # gets the list of images (does NOT get their keys)
+    ret_string = 'Machine ID - Image ID - Time Taken - Label'
+
+    # TODO Adjust the formatting of the display.
+    for image in images:
+        ret_string += "{}\t{}\t{}\t{}\n".format(image.machine, image.dbid, image.taken_time, image.label)
+
+    return ret_string
 
 
 def diff_images():
-    pass
-
-
-def load_db():
-    pass
-
-
-def save_db():
     pass
 
 
