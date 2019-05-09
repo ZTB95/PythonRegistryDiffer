@@ -38,11 +38,27 @@ def list_of_images(db, machine_id=0):
     ret_string = 'Machine ID - Image ID - Time Taken - Label'
 
     # TODO Adjust the formatting of the display.
+    # TODO restrict to only one machine's images.
     for image in images:
         ret_string += "{}\t{}\t{}\t{}\n".format(image.machine, image.dbid, image.taken_time, image.label)
 
     return ret_string
 
+
+def list_of_machines(db):
+    """
+    Gets a formatted list of machines (as a string).
+    :param db: An open database object.
+    :return: string
+    """
+    # TODO add the functionality to list the number of images each machine has
+    machines = db.get_machine_list()  # gets the list of machines (does NOT get their images)
+    ret_string = 'Machine ID - IP - Hostname'
+
+    for machine in machines:
+        ret_string += "{}\t{}\t{}\n".format(machine.dbid, machine.last_ip, machine.hostname)
+
+    return ret_string
 
 def diff_images():
     pass
