@@ -1,28 +1,33 @@
 from .machine import Machine
+from .regcalls import get_registry_image as gri
 
 
-def new_database():
-    pass
+def new_image(machine_id, db):
+    """
+    Creates and inserts a live registry image into the database.
+    :param machine_id: The ID of the machine that will have an image taken.
+    :param db: An open database object.
+    :return: The new Image's database ID.
+    """  # TODO update regcalls gri to check for ip or hostname. Use hostname by default.
+    mach = db.get_machine(machine_id)  # get the database object that regcalls.py needs.
+    gri(mach, hklm=db.hklm, hkcu=db.hkcu, hku=db.hku, hkcc=db.hkcc, hkcr=db.hkcr)
+    return db.add_image(gri)
 
 
-def new_image():
-    pass
-
-
-def new_machine(ip, hostname, dbconn):
+def new_machine(ip, hostname, db):
     """
     Creates a new machine in the database and returns and object.
+
     :param ip: The IP address of the machine (can be None if hostname is not)
     :param hostname: The hostname of the machine (can be None if IP is not).
-    :param dbconn: An open database connection.
-    :return: A machine object that was added to the database.
+    :param db: An open database object.
+    :return: The new machine's database ID.
     """
-    mach = Machine(**{'ip': ip, 'hostname': hostname})  # creates the machine object
-    db_mach = dbconn.add_machine(mach)  # inserts it into the database and saves the new copy that has it's DBID set
-    return db_mach
+    mach = Machine(ip=ip, hostname=hostname)  # creates the machine object
+    return db.add_machine(mach)  # inserts it into the database and return's the new machine's database ID
 
-    
-def list_images():
+
+def list_of_images():
     pass
 
 
