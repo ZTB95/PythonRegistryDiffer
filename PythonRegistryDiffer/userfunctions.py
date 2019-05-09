@@ -27,7 +27,7 @@ def new_machine(ip, hostname, db):
     return db.add_machine(mach)  # inserts it into the database and return's the new machine's database ID
 
 
-def list_of_images(db, machine_id=0):
+def list_of_images(db, machine_id=None):
     """
     Gets a formatted list of images (as a string).
     :param db: An open database object.
@@ -38,7 +38,12 @@ def list_of_images(db, machine_id=0):
     ret_string = 'Machine ID - Image ID - Time Taken - Label'
 
     # TODO Adjust the formatting of the display.
-    # TODO restrict to only one machine's images.
+    if machine_id is not None:
+        images_copy = images  # can't iterate over a list that is being modified.
+        for image in images_copy:
+            if image.machine != machine_id:
+                images.remove(image)  # test this. It might not be pointing to the same image objects in memory. It should, though.
+
     for image in images:
         ret_string += "{}\t{}\t{}\t{}\n".format(image.machine, image.dbid, image.taken_time, image.label)
 
