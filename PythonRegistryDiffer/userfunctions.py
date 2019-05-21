@@ -56,7 +56,6 @@ def list_of_machines(db):
     :param db: An open database object.
     :return: string
     """
-    # TODO add the functionality to list the number of images each machine has
     machines = db.get_machine_list()  # gets the list of machines (does NOT get their images)
     ret_string = 'Machine ID - Last Known IP - Hostname - Image Count'
 
