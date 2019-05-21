@@ -132,7 +132,7 @@ class Database:
         """
         Adds a Machine object to the database.
         :param machine: The Machine object to add to the database.
-        :return: None.
+        :return: int ID of the machine
         """
         self.cursor.execute(sql.insert_into_machine, (
             machine.last_ip,
@@ -142,11 +142,13 @@ class Database:
         if self.auto_commit:
             self.connection.commit()
 
+        return self.get_newest_machine_id()
+
     def add_image(self, image):
         """
         Adds an image to the database. Note this doesn't add keys or values.
         :param image: The image object to add to the database.
-        :return: None
+        :return: int ID of the key
         """
         self.cursor.execute(sql.insert_into_regimage, (
             image.machine,  # TODO: Review having the parent ID inside of Image, but not the other objects.
@@ -156,16 +158,20 @@ class Database:
         if self.auto_commit:
             self.connection.commit()
 
+        new_image_id = self.get_newest_image_id()
+
         for key in image.keys:
             # TODO fix the image ID here.
-            self.add_key(0, key)  # This function will then call add_key_value for each key's value.
+            self.add_key(new_image_id, key)  # This function will then call add_key_value for each key's value.
+
+        return new_image_id
 
     def add_key(self, image_id, key):
         """
         Adds a key to the database. Note that this doesn't add the key's values.
         :param image_id: The image to add the key to.
         :param key: The key object to add to the image.
-        :return: None
+        :return: int ID of the key
         """
         self.cursor.execute(sql.insert_into_regkey, (
             image_id,
@@ -175,16 +181,20 @@ class Database:
         ))
         if self.auto_commit:
             self.connection.commit()
+        new_key_id = self.get_newest_key_id()
 
         for key_value in key.values:
-            self.add_key_value(0, key_value)  # TODO: fix the ID here
+            self.add_key_value(new_key_id, key_value)  # TODO: fix the ID here
+
+        return new_key_id
+
 
     def add_key_value(self, key_id, key_value):
         """
         Adds a (key) value to the specified PythonRegistryDiffer database.
         :param key_id: the id of the key that the key value belongs to.
         :param key_value: The key_value object
-        :return: None
+        :return: int ID of the key_value
         """
         self.cursor.execute(sql.insert_into_regkeyvalue, (
             key_id,
@@ -194,6 +204,8 @@ class Database:
         ))
         if self.auto_commit:
             self.connection.commit()
+
+        return self.get_newest_key_value_id()
 
     def get_machine(self, machine_id):
         """
