@@ -88,19 +88,19 @@ select_all_children_of_regkey_by_id = ('SELECT * '
                                        'FROM RegKeyValue '
                                        'WHERE regKeyId = ? ')
 
-select_newest_in_machine = ('SELECT * '
+select_newest_in_machine = ('SELECT id '
                             'FROM Machine'
                             'WHERE id=(SELECT MAX(id) from Machine) ')
 
-select_newest_in_regimage = ('SELECT * '
+select_newest_in_regimage = ('SELECT id '
                              'FROM RegImage'
                              'WHERE id=(SELECT MAX(id) from RegImage) ')
 
-select_newest_in_regkey = ('SELECT * '
+select_newest_in_regkey = ('SELECT id '
                            'FROM RegKey'
                            'WHERE id=(SELECT MAX(id) from RegKey) ')
 
-select_newest_in_regkeyvalue = ('SELECT * '
+select_newest_in_regkeyvalue = ('SELECT id '
                                 'FROM RegKeyValue'
                                 'WHERE id=(SELECT MAX(id) from RegKeyValue) ')
 

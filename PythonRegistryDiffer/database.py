@@ -281,6 +281,38 @@ class Database:
             new_keyvalue_list.append(KeyValue(dbid=item[0], name=item[2], type=item[3], data=item[4]))
         return new_keyvalue_list
 
+    def get_newest_image_id(self):
+        """
+        Gets the ID of the newest image in the database by finding the highest ID.
+        :return: int - the ID
+        """
+        self.cursor.execute(sql.select_newest_in_regimage)
+        return self.cursor.fetchone()[0]
+
+    def get_newest_machine_id(self):
+        """
+        Gets the ID of the newest machine in the database by finding the highest ID.
+        :return: int - the ID
+        """
+        self.cursor.execute(sql.select_newest_in_machine)
+        return self.cursor.fetchone()[0]
+
+    def get_newest_key_id(self):
+        """
+        Gets the ID of the newest key in the database by finding the highest ID.
+        :return: int - the ID
+        """
+        self.cursor.execute(sql.select_newest_in_regkey)
+        return self.cursor.fetchone()[0]
+
+    def get_newest_key_value_id(self):
+        """
+        Gets the ID of the newest key value in the database by finding the highest ID.
+        :return: int - the ID
+        """
+        self.cursor.execute(sql.select_newest_in_regkeyvalue)
+        return self.cursor.fetchone()[0]
+
     def _create_database(self):
         self.cursor.execute(sql.create_machine_table)
         self.cursor.execute(sql.create_image_table)
