@@ -325,6 +325,15 @@ class Database:
         self.cursor.execute(sql.select_newest_in_regkeyvalue)
         return self.cursor.fetchone()[0]
 
+    def get_count_of_machines_images_by_machine_id(self, machine_id):
+        """
+        Gets the number of images a machine has in the database.
+        :param machine_id: The DBID of the machine who's images you want a count of.
+        :return: int - The number of images the specified machine has.
+        """
+        self.cursor.execute(sql.select_number_of_images_a_machine_has, (machine_id,))
+        return self.cursor.fetchone()[0]
+
     def _create_database(self):
         self.cursor.execute(sql.create_machine_table)
         self.cursor.execute(sql.create_image_table)

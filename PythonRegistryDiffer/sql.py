@@ -107,6 +107,10 @@ select_newest_in_regkeyvalue = ('SELECT id '
 select_hkeys = ('SELECT * '
                 'FROM hkeys ')
 
+select_number_of_images_a_machine_has = ('SELECT COUNT(*) '
+                                         'FROM RegImage '
+                                         'WHERE machineId = ? ')
+
 # INSERTS
 insert_into_machine = 'INSERT INTO Machine(lastKnownIP, hostname) VALUES (?, ?)'  # TODO: Specify columns for all of these...
 
