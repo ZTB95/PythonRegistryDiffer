@@ -188,7 +188,6 @@ class Database:
 
         return new_key_id
 
-
     def add_key_value(self, key_id, key_value):
         """
         Adds a (key) value to the specified PythonRegistryDiffer database.

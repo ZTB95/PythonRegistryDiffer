@@ -58,10 +58,11 @@ def list_of_machines(db):
     """
     # TODO add the functionality to list the number of images each machine has
     machines = db.get_machine_list()  # gets the list of machines (does NOT get their images)
-    ret_string = 'Machine ID - IP - Hostname'
+    ret_string = 'Machine ID - Last Known IP - Hostname - Image Count'
 
     for machine in machines:
-        ret_string += "{}\t{}\t{}\n".format(machine.dbid, machine.last_ip, machine.hostname)
+        image_count = db.get_count_of_machines_images_by_machine_id(machine.dbid)
+        ret_string += "{}\t{}\t{}\t{}\n".format(machine.dbid, machine.last_ip, machine.hostname, image_count)
 
     return ret_string
 
