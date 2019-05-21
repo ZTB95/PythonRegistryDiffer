@@ -45,7 +45,7 @@ def list_of_images(db, machine_id=None):
                 images.remove(image)  # test this. It might not be pointing to the same image objects in memory. It should, though.
 
     for image in images:
-        ret_string += "{}\t{}\t{}\t{}\n".format(image.machine, image.dbid, image.taken_time, image.label)
+        ret_string += "{}\t{}\t{}\t{}\n".format(image.dbid, image.machine, image.label, image.taken_time)
 
     return ret_string
 
@@ -64,6 +64,7 @@ def list_of_machines(db):
         ret_string += "{}\t{}\t{}\n".format(machine.dbid, machine.last_ip, machine.hostname)
 
     return ret_string
+
 
 def diff_images():
     pass
