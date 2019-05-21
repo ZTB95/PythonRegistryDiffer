@@ -153,9 +153,12 @@ class Database:
             image.label,
             image.taken_time  # TODO: fix the time stuff here.
         ))
-
         if self.auto_commit:
             self.connection.commit()
+
+        for key in image.keys:
+            # TODO fix the image ID here.
+            self.add_key(0, key)  # This function will then call add_key_value for each key's value.
 
     def add_key(self, image_id, key):
         """
@@ -173,18 +176,21 @@ class Database:
         if self.auto_commit:
             self.connection.commit()
 
-    def add_key_value(self, key_id, keyvalue):
+        for key_value in key.values:
+            self.add_key_value(0, key_value)  # TODO: fix the ID here
+
+    def add_key_value(self, key_id, key_value):
         """
         Adds a (key) value to the specified PythonRegistryDiffer database.
         :param key_id: the id of the key that the key value belongs to.
-        :param keyvalue: The key_value object
+        :param key_value: The key_value object
         :return: None
         """
         self.cursor.execute(sql.insert_into_regkeyvalue, (
             key_id,
-            keyvalue.name,
-            keyvalue.type,
-            keyvalue.data  # TODO: may have to sent this in using the bytes class? Testing is needed.
+            key_value.name,
+            key_value.type,
+            key_value.data  # TODO: may have to sent this in using the bytes class? Testing is needed.
         ))
         if self.auto_commit:
             self.connection.commit()
