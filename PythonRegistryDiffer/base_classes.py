@@ -23,7 +23,9 @@ class MappedToDatabase:
 
 
 class RegistryObject(MappedToDatabase):
+    """
+    Just in-case I need to make some changes here in the future.
+    """
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-# TODO: Update the documentation here.

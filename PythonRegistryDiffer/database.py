@@ -153,7 +153,7 @@ class Database:
         self.cursor.execute(sql.insert_into_regimage, (
             image.machine,  # TODO: Review having the parent ID inside of Image, but not the other objects.
             image.label,
-            image.taken_time  # TODO: fix the time stuff here.
+            image.taken_time
         ))
         if self.auto_commit:
             self.connection.commit()
@@ -161,7 +161,6 @@ class Database:
         new_image_id = self.get_newest_image_id()
 
         for key in image.keys:
-            # TODO fix the image ID here.
             self.add_key(new_image_id, key)  # This function will then call add_key_value for each key's value.
 
         return new_image_id
@@ -184,7 +183,7 @@ class Database:
         new_key_id = self.get_newest_key_id()
 
         for key_value in key.values:
-            self.add_key_value(new_key_id, key_value)  # TODO: fix the ID here
+            self.add_key_value(new_key_id, key_value)
 
         return new_key_id
 
@@ -199,7 +198,7 @@ class Database:
             key_id,
             key_value.name,
             key_value.type,
-            key_value.data  # TODO: may have to sent this in using the bytes class? Testing is needed.
+            key_value.data  # TODO: may have to send this in using the bytes class? Testing is needed.
         ))
         if self.auto_commit:
             self.connection.commit()
@@ -214,7 +213,6 @@ class Database:
         """
         self.cursor.execute(sql.select_all_from_machine_by_id, (machine_id,))
         mc = self.cursor.fetchone()
-        # TODO: throw an error to the user if there's nothing in here.
         new_machine = Machine(dbid=mc[0], ip=mc[1], hostname=mc[2])
         return new_machine
 
@@ -226,8 +224,7 @@ class Database:
         """
         self.cursor.execute(sql.select_all_from_regimage_by_id, (image_id,))
         im = self.cursor.fetchone()
-        # TODO: throw an error to the user if there's nothing in here.
-        new_image = Image(dbid=im[0], taken_time=im[3], label=im[2], machine=im[1])  # TODO: Verify what data types are coming out of these queries...
+        new_image = Image(dbid=im[0], taken_time=im[3], label=im[2], machine=im[1])
         return new_image
 
     def get_key(self, key_id):
@@ -250,7 +247,6 @@ class Database:
         """
         self.cursor.execute(sql.select_all_from_regkeyvalue_by_id, (key_value_id,))
         kv = self.cursor.fetchone()
-        # TODO: throw an error to the user if there's nothing in here.
         new_key_value = KeyValue(dbid=kv[0], name=kv[2], type=kv[3], data=kv[4])
         return new_key_value
 

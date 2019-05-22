@@ -1,3 +1,5 @@
+# This module is here because I don't like cluttered run modules.
+# Also all, some of these functions could be used by any other script or program that implements this package.
 from .machine import Machine
 from .regcalls import get_registry_image as gri
 
@@ -10,8 +12,13 @@ def new_image(machine_id, db):
     :return: The new Image's database ID.
     """  # TODO update regcalls gri to check for ip or hostname. Use hostname by default.
     mach = db.get_machine(machine_id)  # get the database object that regcalls.py needs.
-    gri(mach, hklm=db.hklm, hkcu=db.hkcu, hku=db.hku, hkcc=db.hkcc, hkcr=db.hkcr)
-    return db.add_image(gri)
+    retd = gri(mach, hklm=db.hklm, hkcu=db.hkcu, hku=db.hku, hkcc=db.hkcc, hkcr=db.hkcr)
+    if retd['errors'].count() == 0:
+        return db.add_image(gri)
+    else:
+        for error in retd['errors']:  # TODO remove this if you're using this package in a different program
+            print(error)
+        return -1
 
 
 def new_machine(ip, hostname, db):

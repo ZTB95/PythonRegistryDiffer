@@ -11,7 +11,7 @@ class Image(bc.RegistryObject):
         self.taken_time = kwargs.get('taken_time')
         self.label = kwargs.get('label')
         self.machine = kwargs.get('machine')
-        self.keys = kwargs.get('keys')  # porperty-itize this ?
+        self.keys = kwargs.get('keys')  # TODO porperty-itize this ?
 
     @property
     def taken_time(self):
@@ -36,3 +36,8 @@ class Image(bc.RegistryObject):
     @machine.setter
     def machine(self, new_machine_name):
         self._machine = new_machine_name
+
+    def __eq__(self, other):
+        return self.machine == other.machine \
+               and self.label == other.label \
+               and self.keys == other.keys
