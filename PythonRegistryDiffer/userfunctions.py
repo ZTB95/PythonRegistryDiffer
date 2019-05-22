@@ -13,12 +13,12 @@ def new_image(machine_id, db):
     """  # TODO update regcalls gri to check for ip or hostname. Use hostname by default.
     mach = db.get_machine(machine_id)  # get the database object that regcalls.py needs.
     retd = gri(mach, hklm=db.hklm, hkcu=db.hkcu, hku=db.hku, hkcc=db.hkcc, hkcr=db.hkcr)
-    if retd['errors'].count() == 0:
-        return db.add_image(gri)
-    else:
+    if retd['errors'].count() is not 0:
         for error in retd['errors']:  # TODO remove this if you're using this package in a different program
             print(error)
-        return -1
+
+    if retd['data'] is not None:
+        return db.add_image(gri)
 
 
 def new_machine(ip, hostname, db):
