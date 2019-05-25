@@ -90,7 +90,21 @@ def diff_images(db, image_1_id, image_2_id, report_type='CSV'):
         :param key: The key to write a string for
         :return: String
         """
-        pass
+        def _create_value_string(key_string, value):
+            return ",{},{},{},{}\n".format(key_string, value.name, value.type, str(value.data))
+
+        key_string = "{},{},{},{},{}".format(key.dbid, key.name, key.has_values, key.modified, key.key_path)
+
+        retobj = ''
+
+        # for each value in the key (if any), create a value string and append it to the return object
+        if key.has_values is True:
+            for value in key.values:
+                retobj += _create_value_string(key_string, value)
+        else:  # key_string doesn't have a newline at the end of it because if there are values in the key, they add it
+            retobj = key_string + '\n'  # so if there's no keys, we have to add a newline ourselves.
+
+        return retobj
 
     # TODO: Complete these functions
     def _write_key_to_csv_diff_report(first_key=None, second_key=None):
