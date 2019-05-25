@@ -1,6 +1,8 @@
 # This module is here because I don't like cluttered run modules.
 # Also all, some of these functions could be used by any other script or program that implements this package.
 from .machine import Machine
+from .key import Key
+from .keyvalue import KeyValue
 from .regcalls import get_registry_image as gri
 
 
@@ -73,14 +75,80 @@ def list_of_machines(db):
     return ret_string
 
 
-def diff_images():
-    def _save_diff_report():
+def diff_images(db, image_1_id, image_2_id, report_type='CSV'):
+    """
+    Diffs two images and returns a report.
+    :param db: An open database object
+    :param image_1_id: DBID of the first image to diff
+    :param image_2_id: DBID of the second image to diff
+    :param report_type: Currently only supports CSV.
+    :return: A string object that contains the fully-built report.
+    """
+    diff_report = ''  # The report is held here
+
+    dbids_of_keys_already_identified = []  # list of DBID's of keys already identified as changed/deleted/added
+
+    # TODO: Complete these functions
+    def _write_key_to_csv_diff_report(first_key=None, second_key=None):
+        """
+        Adds two diff'ed keys found to bew new or deleted to the CSV report
+        :param first_key: The first key (or none if it wasn't found)
+        :param second_key: The second key (or none if it wasn't found)
+        :return: None
+        """
         pass
 
-    pass
+    def _write_images_to_csv_diff_report(image1, image2):
+        """
+        Writes image headers to the report (CSV type)
+        :param image1:
+        :param image2:
+        :return:
+        """
+        pass
 
+    def _find_keys_that_were_deleted_or_added(key_list_1, key_list_2):
+        """
+        Finds keys that were deleted or added, then adds them to the proper report type
+        :param key_list_1: The key list for the first image
+        :param key_list_2: The key list for the second image
+        :return: None
+        """
+        pass
 
+    def _find_keys_whose_values_have_changed(key_list_1, key_list_2):
+        """
+        Finds keys whose values have changed
+        :param key_list_1: The key list for the first image
+        :param key_list_2: The key list for the second image
+        :return: None
+        """
+        pass
 
+    def _find_keys_whose_metadata_has_changed_but_not_the_values(key_list_1, key_list_2):
+        """
+        Finds keys that have metadata changes but all values are the same.
+        :param key_list_1: The key list for the first image
+        :param key_list_2: The key list for the second image
+        :return: None
+        """
+        pass
+
+    # get the images so we can put there data at the top of the report.
+    image_1 = db.get_image(image_1_id)
+    image_2 = db.get_image(image_2_id)
+
+    if report_type == 'CSV':
+        _write_images_to_csv_diff_report(image_1, image_2)
+    else:
+        raise ValueError("Unsupported report type given: {}".format(report_type))
+
+    image_1_keys = db.get_key_list(image_1_id)
+    image_2_keys = db.get_key_list(image_2_id)
+
+    _find_keys_that_were_deleted_or_added(image_1_keys, image_2_keys)
+    _find_keys_whose_values_have_changed(image_1_keys, image_2_keys)
+    _find_keys_whose_metadata_has_changed_but_not_the_values(image_1_keys, image_2_keys)
 
 
 
