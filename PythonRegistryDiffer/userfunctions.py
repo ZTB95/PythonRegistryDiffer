@@ -93,17 +93,14 @@ def diff_images(db, image_1_id, image_2_id, report_type='CSV'):
         def _create_value_string(key_string, value):
             return ",{},{},{},{}\n".format(key_string, value.name, value.type, str(value.data))
 
+        # Generate the key string and initialize retobj in the proper scope.
         key_string = "{},{},{},{},{}".format(key.dbid, key.name, key.has_values, key.modified, key.key_path)
-
-        retobj = ''
+        retobj = key_string + '\n'
 
         # for each value in the key (if any), create a value string and append it to the return object
         if key.has_values is True:
             for value in key.values:
                 retobj += _create_value_string(key_string, value)
-        else:  # key_string doesn't have a newline at the end of it because if there are values in the key, they add it
-            retobj = key_string + '\n'  # so if there's no keys, we have to add a newline ourselves.
-
         return retobj
 
     # TODO: Complete these functions
@@ -179,6 +176,7 @@ def diff_images(db, image_1_id, image_2_id, report_type='CSV'):
     _find_keys_whose_metadata_has_changed_but_not_the_values(image_1_keys, image_2_keys)
 
     return diff_report
+
 
 def prd_help():
     print("""USAGE:
