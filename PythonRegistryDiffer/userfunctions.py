@@ -84,9 +84,13 @@ def diff_images(db, image_1_id, image_2_id, report_type='CSV'):
     :param report_type: Currently only supports CSV.
     :return: A string object that contains the fully-built report.
     """
-    diff_report = ''  # The report is held here
-
-    dbids_of_keys_already_identified = []  # list of DBID's of keys already identified as changed/deleted/added
+    def _create_key_and_value_string(key):
+        """
+        Returns a string that represents a key and its values. Used by various diff functions.
+        :param key: The key to write a string for
+        :return: String
+        """
+        pass
 
     # TODO: Complete these functions
     def _write_key_to_csv_diff_report(first_key=None, second_key=None):
@@ -96,16 +100,22 @@ def diff_images(db, image_1_id, image_2_id, report_type='CSV'):
         :param second_key: The second key (or none if it wasn't found)
         :return: None
         """
-        pass
 
-    def _write_images_to_csv_diff_report(image1, image2):
+    def _write_images_to_csv_diff_report(image_1, image_2):
         """
-        Writes image headers to the report (CSV type)
-        :param image1:
-        :param image2:
-        :return:
+        Writes image headers to the report (CSV type).
+        :param image_1: The first image
+        :param image_2: The second image
+        :return: None
         """
-        pass
+        def _create_image_string(image):
+            return "{},{},{},{}\n".format(image.dbid, image.machine, image.label, image.taken_time)
+
+        retobj = 'Image DBID,Machine ID,Label,Time Taken'
+        retobj += _create_image_string(image_1)
+        retobj += _create_image_string(image_2)
+
+        return retobj
 
     def _find_keys_that_were_deleted_or_added(key_list_1, key_list_2):
         """
@@ -134,12 +144,16 @@ def diff_images(db, image_1_id, image_2_id, report_type='CSV'):
         """
         pass
 
+    ## Execution starts here ##
+    diff_report = ''  # The report is held in this
+    dbids_of_keys_already_identified = []  # list of DBID's of keys already identified as changed/deleted/added
+
     # get the images so we can put there data at the top of the report.
     image_1 = db.get_image(image_1_id)
     image_2 = db.get_image(image_2_id)
 
     if report_type == 'CSV':
-        _write_images_to_csv_diff_report(image_1, image_2)
+        diff_report += _write_images_to_csv_diff_report(image_1, image_2)
     else:
         raise ValueError("Unsupported report type given: {}".format(report_type))
 
@@ -150,7 +164,7 @@ def diff_images(db, image_1_id, image_2_id, report_type='CSV'):
     _find_keys_whose_values_have_changed(image_1_keys, image_2_keys)
     _find_keys_whose_metadata_has_changed_but_not_the_values(image_1_keys, image_2_keys)
 
-
+    return diff_report
 
 def prd_help():
     print("""USAGE:
