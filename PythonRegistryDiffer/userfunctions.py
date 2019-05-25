@@ -74,7 +74,14 @@ def list_of_machines(db):
 
 
 def diff_images():
+    def _save_diff_report():
+        pass
+
     pass
+
+
+
+
 
 
 def prd_help():
