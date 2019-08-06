@@ -12,7 +12,7 @@ def new_image(machine_id, db):
     :param machine_id: The ID of the machine that will have an image taken.
     :param db: An open database object.
     :return: The new Image's database ID.
-    """  # TODO update regcalls gri to check for ip or hostname. Use hostname by default.
+    """  
     mach = db.get_machine(machine_id)  # get the database object that regcalls.py needs.
     retd = gri(mach, hklm=db.hklm, hkcu=db.hkcu, hku=db.hku, hkcc=db.hkcc, hkcr=db.hkcr)
     if retd['errors'].count() is not 0:

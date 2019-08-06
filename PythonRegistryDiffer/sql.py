@@ -108,7 +108,7 @@ select_number_of_images_a_machine_has = ('SELECT COUNT(*) '
                                          'WHERE machineId = ? ')
 
 # INSERTS
-insert_into_machine = 'INSERT INTO Machine(lastKnownIP, hostname) VALUES (?, ?)'  # TODO: Specify columns for all of these...
+insert_into_machine = 'INSERT INTO Machine(lastKnownIP, hostname) VALUES (?, ?)'
 
 insert_into_regimage = 'INSERT INTO RegImage(machineId, label, timeTaken) VALUES (?, ?, ?)'
 

@@ -207,8 +207,13 @@ def get_registry_image(machine, hklm, hku, hkcu, hkcc, hkcr, label=''):
     # Open the registry handle
     if machine.hostname == 'localhost':
         target_ip = None  # this is what winreg is expecting for localhost
-    else:
+    elif machine.hostname is not None:  # Prioritize using the hostname over IP, if hostname exists
+        target_ip = '\\\\{}'.format(machine.hostname)
+    elif machine.last_ip is not None:
         target_ip = '\\\\{}'.format(str(machine.last_ip))  # Winreg expects the format '\\<hostname>|<ip>' or None
+    else:
+        raise Exception("No acceptable connection data was given.")
+
 
     # DRY enumeration for each HKEY TODO: Handle failed connection errors.
     def enum_registry(hkey_root):
