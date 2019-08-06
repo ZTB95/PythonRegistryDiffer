@@ -160,8 +160,9 @@ class Database:
 
         new_image_id = self.get_newest_image_id()
 
-        for key in image.keys:
-            self.add_key(new_image_id, key)  # This function will then call add_key_value for each key's value.
+        if image.keys is not None and len(image.keys) != 0:
+            for key in image.keys:
+                self.add_key(new_image_id, key)  # This function will then call add_key_value for each key's value.
 
         return new_image_id
 
