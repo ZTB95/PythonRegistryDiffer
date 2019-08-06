@@ -1,4 +1,5 @@
 import unittest
+import os  # used to remove the database test file so it doesn't interfere with other tests
 from datetime import datetime as dt
 from PythonRegistryDiffer.database import Database
 from PythonRegistryDiffer.machine import Machine
@@ -47,7 +48,7 @@ class TestDatabase(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        pass
+        os.remove('testfile.db')
 
     def setUp(self):
         self._dbf.open()
