@@ -21,10 +21,18 @@ class Key(bc.RegistryObject):
         super().__init__(**kwargs)
 
     def __eq__(self, other):
-        return self.name == other.name and \
-               self.key_path == other.key_path and \
-               self.modified == other.modified and \
-               self.values == other.values
+        if self.name == other.name and \
+           self.key_path == other.key_path and \
+           self.modified == other.modified:
+            for val in self.values:
+                if val not in other.values:
+                    return False
+            for val in other.values:
+                if val not in self.values:
+                    return False
+            return True
+        else:  # Yea, it's not needed. But for clarity's sake.
+            return False
 
     @property
     def key_path(self):

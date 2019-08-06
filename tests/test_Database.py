@@ -139,17 +139,21 @@ class TestDatabase(unittest.TestCase):
         xf.values = self._dbf.get_key_value_list(1)
         xm.values = self._dbm.get_key_value_list(1)
 
+
         self.assertEqual(xf.name, self._key.name)
         self.assertEqual(xf.modified, self._key.modified)
         self.assertEqual(xf.key_path, self._key.key_path)
-        self.assertEqual(xf.values, self._key.values)
+        #self.assertEqual(xf.values, self._key.values) # this will never work. Can't compare the lists like this in python.
+        # instead, I've added it into the key.__eq__()
+        self.assertEqual(xf, self._key) # this will check name, modified, key_path, AND the actual key values directly.
         self.assertEqual(xf.has_values, self._key.has_values)
         self.assertEqual(xf.dbid, 1)
 
         self.assertEqual(xm.name, self._key.name)
         self.assertEqual(xm.modified, self._key.modified)
         self.assertEqual(xm.key_path, self._key.key_path)
-        self.assertEqual(xm.values, self._key.values)
+        # self.assertEqual(xm.values, self._key.values) will never work, see above
+        self.assertEqual(xm, self._key)
         self.assertEqual(xm.has_values, self._key.has_values)
         self.assertEqual(xm.dbid, 1)
 
