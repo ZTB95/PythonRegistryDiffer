@@ -330,6 +330,10 @@ class Database:
         return self.cursor.fetchone()[0]
 
     def _create_database(self):
+        """
+        Called by dunder init to create a new database.
+        :return: None.
+        """
         self.cursor.execute(sql.create_machine_table)
         self.cursor.execute(sql.create_image_table)
         self.cursor.execute(sql.create_key_table)

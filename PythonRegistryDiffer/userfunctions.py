@@ -107,12 +107,13 @@ def diff_images(db, image_1_id, image_2_id, report_type='CSV'):
     def _write_key_to_csv_diff_report(first_key=None, second_key=None):
         """
         Adds two diff'ed keys found to bew new or deleted to the CSV report
+        If one of the key's isn't passed in, then it will be assumed as missing or deleted.
         :param first_key: The first key (or none if it wasn't found)
         :param second_key: The second key (or none if it wasn't found)
         :return: None
         """
 
-    def _write_images_to_csv_diff_report(image_1, image_2):
+    def _write_image_headers_to_csv_diff_report(image_1, image_2):
         """
         Writes image headers to the report (CSV type).
         :param image_1: The first image
@@ -133,7 +134,7 @@ def diff_images(db, image_1_id, image_2_id, report_type='CSV'):
         Finds keys that were deleted or added, then adds them to the proper report type
         :param key_list_1: The key list for the first image
         :param key_list_2: The key list for the second image
-        :return: None
+        :return: A list of dictionaries that contains a key and the image it is in.
         """
         pass
 
@@ -142,16 +143,7 @@ def diff_images(db, image_1_id, image_2_id, report_type='CSV'):
         Finds keys whose values have changed
         :param key_list_1: The key list for the first image
         :param key_list_2: The key list for the second image
-        :return: None
-        """
-        pass
-
-    def _find_keys_whose_metadata_has_changed_but_not_the_values(key_list_1, key_list_2):
-        """
-        Finds keys that have metadata changes but all values are the same.
-        :param key_list_1: The key list for the first image
-        :param key_list_2: The key list for the second image
-        :return: None
+        :return: A list of dictionaries that each contain two keys w/equal paths; but their values don't match.
         """
         pass
 
@@ -164,16 +156,15 @@ def diff_images(db, image_1_id, image_2_id, report_type='CSV'):
     image_2 = db.get_image(image_2_id)
 
     if report_type == 'CSV':
-        diff_report += _write_images_to_csv_diff_report(image_1, image_2)
+        diff_report += _write_image_headers_to_csv_diff_report(image_1, image_2)
     else:
         raise ValueError("Unsupported report type given: {}".format(report_type))
 
     image_1_keys = db.get_key_list(image_1_id)
     image_2_keys = db.get_key_list(image_2_id)
 
-    _find_keys_that_were_deleted_or_added(image_1_keys, image_2_keys)
+    change_or_removed_lists = _find_keys_that_were_deleted_or_added(image_1_keys, image_2_keys)
     _find_keys_whose_values_have_changed(image_1_keys, image_2_keys)
-    _find_keys_whose_metadata_has_changed_but_not_the_values(image_1_keys, image_2_keys)
 
     return diff_report
 
