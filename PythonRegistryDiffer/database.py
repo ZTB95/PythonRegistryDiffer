@@ -28,6 +28,7 @@ class Database:
         self.hku = hku
         self.hkcr = hkcr
         self.hkcc = hkcc
+
         if self.hkeys == (False, False, False, False, False):
             raise ValueError('All HKEYs were set to false.')
 
@@ -96,7 +97,7 @@ class Database:
         loaded = os.path.isfile(self.location)
 
         # Create the database connection.
-        if self.location.lower == 'memory':
+        if self.location.lower() == 'memory':
             self.connection = sqlite3.connect(':memory:', detect_types=sqlite3.PARSE_DECLTYPES)
         else:
             self.connection = sqlite3.connect(self.location, detect_types=sqlite3.PARSE_DECLTYPES)
