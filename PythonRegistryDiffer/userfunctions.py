@@ -12,7 +12,7 @@ def new_image(machine_id, db):
     :param machine_id: The ID of the machine that will have an image taken.
     :param db: An open database object.
     :return: The new Image's database ID.
-    """  
+    """
     mach = db.get_machine(machine_id)  # get the database object that regcalls.py needs.
     retd = gri(mach, hklm=db.hklm, hkcu=db.hkcu, hku=db.hku, hkcc=db.hkcc, hkcr=db.hkcr)
     if retd['errors'].count() is not 0:
@@ -129,23 +129,63 @@ def diff_images(db, image_1_id, image_2_id, report_type='CSV'):
 
         return retobj
 
-    def _find_keys_that_were_deleted_or_added(key_list_1, key_list_2):
+    def _find_keys_that_were_deleted_added_edited(key_list_1, key_list_2):
         """
         Finds keys that were deleted or added, then adds them to the proper report type
         :param key_list_1: The key list for the first image
         :param key_list_2: The key list for the second image
         :return: A list of dictionaries that contains a key and the image it is in.
         """
-        pass
+        list_of_diff_keys_in_image_1 = []
+        list_of_diff_keys_in_image_2 = []
+        list_of_key_dicts = []
 
-    def _find_keys_whose_values_have_changed(key_list_1, key_list_2):
-        """
-        Finds keys whose values have changed
-        :param key_list_1: The key list for the first image
-        :param key_list_2: The key list for the second image
-        :return: A list of dictionaries that each contain two keys w/equal paths; but their values don't match.
-        """
-        pass
+        # get a list of keys that are different or non-existent between the images. (See Key.__eq__() implementation)
+        for key in key_list_1:
+            if key not in key_list_2:
+                list_of_diff_keys_in_image_1.append(key)
+        for key in key_list_2:
+            if key not in key_list_1:
+                list_of_diff_keys_in_image_2.append(key)
+
+        for key1 in list_of_diff_keys_in_image_1:
+            for key2 in list_of_diff_keys_in_image_2:
+                if key2.name == key1.name:
+                    list_of_key_dicts.append(
+                        {
+                         'type': 0,  # type 0 is changed. Only need to find these once.
+                         'key1': key1,
+                         'key2': key2
+                        }
+                    )
+                    break
+                else:
+                    pass  # this is here for readability/clarity
+            else:  # if the key wasn't found in the second list.
+                list_of_key_dicts.append(
+                    {
+                        'type': 1,  # type 1 is deleted
+                        'key': key1
+                    }
+                )
+        # finding added keys
+        for key2 in list_of_diff_keys_in_image_2:
+            for key1 in list_of_diff_keys_in_image_1:
+                if key1.name == key2.name:
+                    break  # edited keys were already found above. Just need to break for this one.
+                else:
+                    pass  # this is again for readability/clarity
+            else:
+                list_of_key_dicts.append(
+                    {
+                        'type': 2,  # type 2 is added
+                        'key': key2
+                    }
+                )
+        # Check to make sure the keys aren't actually in the other image. This differentiates between keys that are new
+        # or deleted and keys that were simply edited.
+        return list_of_key_dicts
+
 
     ## Execution starts here ##
     diff_report = ''  # The report is held in this
