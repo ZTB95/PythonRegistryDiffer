@@ -84,34 +84,49 @@ def diff_images(db, image_1_id, image_2_id, report_type='CSV'):
     :param report_type: Currently only supports CSV.
     :return: A string object that contains the fully-built report.
     """
-    def _create_key_and_value_string(key):
+    def _create_key_and_value_string(key, image_num):
         """
         Returns a string that represents a key and its values. Used by various diff functions.
         :param key: The key to write a string for
         :return: String
         """
-        def _create_value_string(key_string, value):
-            return ",{},{},{},{}\n".format(key_string, value.name, value.type, str(value.data))
+        def _create_value_string(image_id, key_name, val):
+            return "{],{},{},{},{}\n".format(image_id, key_name, val.name, val.type, str(val.data))
 
-        # Generate the key string and initialize retobj in the proper scope.
-        key_string = "{},{},{},{},{}".format(key.dbid, key.name, key.has_values, key.modified, key.key_path)
-        retobj = key_string + '\n'
+        # Generate the key string
+        key_string = "[],{},{},{},{}".format(image_num, key.name, key.has_values, key.modified, key.key_path)
+        retobj = key_string + '\n0,VALUES\n'
 
         # for each value in the key (if any), create a value string and append it to the return object
         if key.has_values is True:
             for value in key.values:
-                retobj += _create_value_string(key_string, value)
+                retobj += _create_value_string(image_num, key_string, value)
         return retobj
 
     # TODO: Complete these functions
-    def _write_key_to_csv_diff_report(first_key=None, second_key=None):
+    def _write_keys_to_csv_diff_report(key_dictionaries):
         """
-        Adds two diff'ed keys found to bew new or deleted to the CSV report
-        If one of the key's isn't passed in, then it will be assumed as missing or deleted.
-        :param first_key: The first key (or none if it wasn't found)
-        :param second_key: The second key (or none if it wasn't found)
-        :return: None
+        Generates a report string given a list of key dictionaries of types 0, 2, and 2.
+        :param key_dictionaries: The dictionary of diffed keys
+        :return: String report in CSV format.
         """
+        report = ''
+        for dict in key_dictionaries:
+            if dict.get('type') == 0:
+                report += '0,KEYS CHANGED'
+                report += _create_key_and_value_string(dict.get('key1'), '1')
+                report += _create_key_and_value_string(dict.get('key2'), '2')
+                report += '0,END KEYS CHANGED\n'
+            elif dict.get('type') == 1:
+                report += '0, KEY DELETED'
+                report += _create_key_and_value_string(dict.get('key'), dict.get('type'))
+            elif dict.get('type') == 2:
+                report += '0, KEY ADDED'
+                report += _create_key_and_value_string(dict.get('key'), dict.get('type'))
+            else:
+                raise ValueError('Unknown diff type presented to the report writing function. Type: {}'.format(
+                    dict.get('type'))
+                )
 
     def _write_image_headers_to_csv_diff_report(image_1, image_2):
         """
@@ -186,8 +201,7 @@ def diff_images(db, image_1_id, image_2_id, report_type='CSV'):
         # or deleted and keys that were simply edited.
         return list_of_key_dicts
 
-
-    ## Execution starts here ##
+    # Execution of this function starts here #
     diff_report = ''  # The report is held in this
     dbids_of_keys_already_identified = []  # list of DBID's of keys already identified as changed/deleted/added
 
@@ -195,16 +209,18 @@ def diff_images(db, image_1_id, image_2_id, report_type='CSV'):
     image_1 = db.get_image(image_1_id)
     image_2 = db.get_image(image_2_id)
 
-    if report_type == 'CSV':
-        diff_report += _write_image_headers_to_csv_diff_report(image_1, image_2)
-    else:
-        raise ValueError("Unsupported report type given: {}".format(report_type))
-
     image_1_keys = db.get_key_list(image_1_id)
     image_2_keys = db.get_key_list(image_2_id)
 
-    change_or_removed_lists = _find_keys_that_were_deleted_or_added(image_1_keys, image_2_keys)
-    _find_keys_whose_values_have_changed(image_1_keys, image_2_keys)
+    diff_dictionaries_list = _find_keys_that_were_deleted_added_edited(image_1_keys, image_2_keys)
+
+    if report_type == 'CSV':
+        diff_report += _write_image_headers_to_csv_diff_report(image_1, image_2)
+        _write_keys_to_csv_diff_report(diff_dictionaries_list)
+    elif report_type == 'JSON':
+        pass
+    else:
+        raise ValueError("Unsupported report type given: {}".format(report_type))
 
     return diff_report
 
