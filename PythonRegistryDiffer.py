@@ -90,7 +90,7 @@ def open_db(location, hklm=True, hkcu=True, hku=True, hkcr=True, hkcc=True):
 
     with dbo as db:
         while True:
-            cmd = input('> ')
+            cmd = input('> ').lower().split(' ')
             if process_database_commands(cmd, db):
                 continue
             else:
