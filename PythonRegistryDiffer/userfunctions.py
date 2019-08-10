@@ -1,8 +1,6 @@
 # This module is here because I don't like cluttered run modules.
 # Also all, some of these functions could be used by any other script or program that implements this package.
 from .machine import Machine
-from .key import Key
-from .keyvalue import KeyValue
 from .regcalls import get_registry_image as gri
 
 
@@ -98,35 +96,36 @@ def diff_images(db, image_1_id, image_2_id, report_type='CSV'):
         retobj = key_string + '\n0,VALUES\n'
 
         # for each value in the key (if any), create a value string and append it to the return object
-        if key.has_values is True:
+        if key.has_values:
             for value in key.values:
                 retobj += _create_value_string(image_num, key_string, value)
         return retobj
 
     # TODO: Complete these functions
-    def _write_keys_to_csv_diff_report(key_dictionaries):
+    def _generate_diff_report_csv_format(key_dictionaries):
         """
         Generates a report string given a list of key dictionaries of types 0, 2, and 2.
         :param key_dictionaries: The dictionary of diffed keys
         :return: String report in CSV format.
         """
         report = ''
-        for dict in key_dictionaries:
-            if dict.get('type') == 0:
+        for keydict in key_dictionaries:
+            if keydict.get('type') == 0:
                 report += '0,KEYS CHANGED'
-                report += _create_key_and_value_string(dict.get('key1'), '1')
-                report += _create_key_and_value_string(dict.get('key2'), '2')
+                report += _create_key_and_value_string(keydict.get('key1'), '1')
+                report += _create_key_and_value_string(keydict.get('key2'), '2')
                 report += '0,END KEYS CHANGED\n'
-            elif dict.get('type') == 1:
+            elif keydict.get('type') == 1:
                 report += '0, KEY DELETED'
-                report += _create_key_and_value_string(dict.get('key'), dict.get('type'))
-            elif dict.get('type') == 2:
+                report += _create_key_and_value_string(keydict.get('key'), keydict.get('type'))
+            elif keydict.get('type') == 2:
                 report += '0, KEY ADDED'
-                report += _create_key_and_value_string(dict.get('key'), dict.get('type'))
+                report += _create_key_and_value_string(keydict.get('key'), keydict.get('type'))
             else:
                 raise ValueError('Unknown diff type presented to the report writing function. Type: {}'.format(
-                    dict.get('type'))
+                    keydict.get('type'))
                 )
+        return report
 
     def _write_image_headers_to_csv_diff_report(image_1, image_2):
         """
@@ -163,6 +162,7 @@ def diff_images(db, image_1_id, image_2_id, report_type='CSV'):
             if key not in key_list_1:
                 list_of_diff_keys_in_image_2.append(key)
 
+        # Find changed or deleted keys
         for key1 in list_of_diff_keys_in_image_1:
             for key2 in list_of_diff_keys_in_image_2:
                 if key2.name == key1.name:
@@ -183,7 +183,7 @@ def diff_images(db, image_1_id, image_2_id, report_type='CSV'):
                         'key': key1
                     }
                 )
-        # finding added keys
+        # finding keys added in the second image
         for key2 in list_of_diff_keys_in_image_2:
             for key1 in list_of_diff_keys_in_image_1:
                 if key1.name == key2.name:
@@ -203,9 +203,8 @@ def diff_images(db, image_1_id, image_2_id, report_type='CSV'):
 
     # Execution of this function starts here #
     diff_report = ''  # The report is held in this
-    dbids_of_keys_already_identified = []  # list of DBID's of keys already identified as changed/deleted/added
 
-    # get the images so we can put there data at the top of the report.
+    # get the images
     image_1 = db.get_image(image_1_id)
     image_2 = db.get_image(image_2_id)
 
@@ -216,12 +215,11 @@ def diff_images(db, image_1_id, image_2_id, report_type='CSV'):
 
     if report_type == 'CSV':
         diff_report += _write_image_headers_to_csv_diff_report(image_1, image_2)
-        _write_keys_to_csv_diff_report(diff_dictionaries_list)
+        _generate_diff_report_csv_format(diff_dictionaries_list)
     elif report_type == 'JSON':
-        pass
+        # TODO: Implement JSON reports
+        diff_report = "{\n    'error': 'JSON reporting not yet implemented.'\n}"
     else:
         raise ValueError("Unsupported report type given: {}".format(report_type))
 
     return diff_report
-
-
