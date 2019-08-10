@@ -131,7 +131,27 @@ OPTIONS:
 
 
 def new_image(cmd, db):
-    pass
+    quiet = False
+    machine_id = 0
+
+    if len(cmd) not in (1, 2, 3, 4):
+        print('Unkown arguments: {}'.format(cmd))
+        return
+    elif '-q' in cmd or '--quiet' in cmd:  # more verbose than it needs to be, but for clarity's sake
+        print('Quiet mode has not been implemented yet for new-image. Continuing anyway...')
+        quiet = True  # TODO: Implement quiet mode for new-image command
+        if '-q' in cmd:
+            cmd.remove('-q')
+        elif '--quiet' in cmd:
+            cmd.remove('--quiet')
+    if '-i' in cmd:
+        try:
+            machine_id = int(cmd[cmd.index('-i') + 1])
+        except:
+            print('Bad machine ID: {}'.format(cmd))
+            return
+         # TODO: Make sure ths machine actually exists. Will likely throw an exception if it doesn't.
+    prd.new_image(machine_id, db)
 
 
 def new_machine(cmd, db):
@@ -157,57 +177,73 @@ def update_machine(cmd, db):
 # DATABASE OPENED COMMAND SECTION
 def process_database_commands(cmd, db):
     if cmd[0] == 'exit':
-        pass
-    if cmd[0] == '':
-        pass
-    if cmd[0] == '':
-        pass
-    if cmd[0] == '':
-        pass
-    if cmd[0] == '':
-        pass
-    if cmd[0] == '':
-        pass
+        return True
+    elif cmd[0] == 'new-image':
+        new_image(cmd, db)
+    elif cmd[0] == 'new-machine':
+        new_machine(cmd, db)
+    elif cmd[0] == 'list-images':
+        list_images(cmd, db)
+    elif cmd[0] == 'list-machines':
+        list_machines(cmd, db)
+    elif cmd[0] == 'update-machine':
+        update_machine(cmd, db)
+    elif cmd[0] == 'diff-images':
+        diff_images(cmd, db)
+    elif cmd[0] == 'close-db':
+        if db.location == 'memory':
+            if input('Current database is in memory only; exiting will destroy it. Are you sure? ').lower() not in (
+                    'y',
+                    'yes'):
+                return False
+        return True
+    elif cmd[0] == 'help':
+        prd_help_open()
     return False
 
 
 def prd_help_open():
     print("""Commands in current context:
-        new-image   : Creates a new comparison image. It will only check the HKEYs that the database was created with.
-                      Use machine=<id> to specify a specific machine to diff. By default it goes for the machine of 0.
-                      "new-image machine=1"
+        new-image       : Creates a new comparison image. It will only check the HKEYs that the database was created with.
+                          Use machine=<id> to specify a specific machine to diff. By default it goes for the machine of 0.
+                          "new-image machine=1"
 
-        list-images : Lists the number of current images in the db and some cursory details.
+        list-images     : Lists the number of current images in the db and some cursory details.
 
-        diff-images : Generates a report that compares two different registry images. Enter the image numbers from 
-                     list-images as arguments to designate which images to compare. Use "-f filename" to save the report
-                     to a file. Examples:
-                    "diff-images 0 3" 
-                    "diff-images 2 0"
-                    "diff-images 1 2 -f registry-report.txt" 
+        diff-images     : Generates a report that compares two different registry images. Enter the image numbers from 
+                          list-images as arguments to designate which images to compare. Use "-f filename" to save the report
+                          to a file. Examples:
+                          "diff-images 0 3" 
+                          "diff-images 2 0"
+                          "diff-images 1 2 -f registry-report.txt" 
 
-        close-db    : Close this database and prepare to create/load another. Databases in memory will be destroyed.
+        close-db, exit  : Close this database and prepare to create/load another. Databases in memory will be destroyed.
 
-        new-machine : Adds a new machine to this database. If given both, the hostname will always be used to connect.
-                    Must have either an IP or a hostname:
-                    "add-machine ip=192.168.0.10"
-                    "add-machine hostname=testmachine01"
-                    "add-machine ip=192.168.0.2 hostname=mywinserver01"
+        new-machine     : Adds a new machine to this database. If given both, the hostname will always be used to connect.
+                          Must have either an IP or a hostname:
+                          "add-machine ip=192.168.0.10"
+                          "add-machine hostname=testmachine01"
+                          "add-machine ip=192.168.0.2 hostname=mywinserver01"
                     
-                    NOTE: Localhost is by default machine 0. You don't have to add it.
+                          NOTE: Localhost is by default machine 0. You don't have to add it.
 
-        list-machines : Prints a list of machines in this database.
+        list-machines   : Prints a list of machines in this database.
 
-        update-machine : Similar to add machine; except it updates the specified fields. Use the machine ID to specify
-                         which machine to edit.
-                         "update-machine
-        -h | help   : Show this help information
+        update-machine  : Similar to add machine; except it updates the specified fields. Use the machine ID to specify
+                          which machine to edit.
+                          "update-machine
+        help            : Show this help information
 
 
-        -f | --file <filename> : The database or report file to use/save as/load from
-              IE:
-              "load-db -f C:\Work\Registry_set.db"
-              "diff-images 1 2 -f registry-report.txt" 
+        -f | --file     : Report file name to save to. Will overwrite any existing file.
+                          IE:
+                         "load-db -f C:\Work\Registry_set.db"
+                         "diff-images 1 2 -f registry-report.txt" 
+                         
+        -q | --quiet    : Suppresses output of errors when using new-image; prevents a diff report from being written to 
+                          the screen. 
+        
+        -i              : Specify a machine ID. Not using this in new-image defaults to localhost (machine 0)
 """)
 
 
