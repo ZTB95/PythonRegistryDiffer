@@ -334,6 +334,7 @@ class Database:
         self.cursor.execute(sql.create_only_one_hkey_trigger)
         self.cursor.execute(sql.enforce_foreign_keys)
         self.cursor.execute(sql.insert_into_machine, ('127.0.0.1', 'localhost'))
+        self.connection.commit()
 
     def _run_and_fetch_all(self, query, insert=None):
         """

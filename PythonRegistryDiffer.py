@@ -83,7 +83,8 @@ def new_db(args):
 
     if len(args) is not 0:
         print('Unknown arguments: {}'.format(args))
-    open_db(filename, hklm, hkcu, hku, hkcr, hkcc, True)
+        return
+    open_db(filename, hklm, hkcu, hku, hkcr, hkcc)
 
 
 def open_db(location, hklm=True, hkcu=True, hku=True, hkcr=True, hkcc=True):
@@ -132,7 +133,7 @@ OPTIONS:
 
 def new_image(cmd, db):
     quiet = False
-    machine_id = 0
+    machine_id = 1
 
     if len(cmd) not in (1, 2, 3, 4):
         print('Unkown arguments: {}'.format(cmd))
@@ -225,7 +226,7 @@ def prd_help_open():
                           "add-machine hostname=testmachine01"
                           "add-machine ip=192.168.0.2 hostname=mywinserver01"
                     
-                          NOTE: Localhost is by default machine 0. You don't have to add it.
+                          NOTE: Localhost is by default machine 1. You don't have to add it.
 
         list-machines   : Prints a list of machines in this database.
 
@@ -243,7 +244,7 @@ def prd_help_open():
         -q | --quiet    : Suppresses output of errors when using new-image; prevents a diff report from being written to 
                           the screen. 
         
-        -i              : Specify a machine ID. Not using this in new-image defaults to localhost (machine 0)
+        -i              : Specify a machine ID. Not using this in new-image defaults to localhost (machine 1)
 """)
 
 

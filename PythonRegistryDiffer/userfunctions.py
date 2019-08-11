@@ -13,7 +13,7 @@ def new_image(machine_id, db):
     """
     mach = db.get_machine(machine_id)  # get the database object that regcalls.py needs.
     retd = gri(mach, hklm=db.hklm, hkcu=db.hkcu, hku=db.hku, hkcc=db.hkcc, hkcr=db.hkcr)
-    if retd['errors'].count() is not 0:
+    if len(retd['errors']) is not 0:
         for error in retd['errors']:  # TODO remove this if you're using this package in a different program
             print(error)
 

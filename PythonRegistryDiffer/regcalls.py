@@ -30,7 +30,7 @@ def get_key_value(key_handle, value_index):
 
     except Exception:  # TODO Going to find out what errors I want to catch during testing; for now just rethrow them.
         retd['errors'].append(Exception)
-        raise Exception  # DEBUG TODO remove
+        #raise Exception  # DEBUG TODO remove
 
     return retd
 
@@ -66,7 +66,7 @@ def get_all_key_values(key_handle):
     # there should only ever be exceptions here if get_key_value fails to catch one, or if QueryInfoKey fails.
     except Exception:  # TODO finish
         retd['errors'].append(Exception)
-        raise Exception  # DEBUG TODO remove
+        #raise Exception  # DEBUG TODO remove
 
     return retd
 
@@ -108,7 +108,7 @@ def get_key(parent_key_handle, key_name, key_path):
 
     except Exception:  # TODO finish
         retd['errors'].append(Exception)
-        raise Exception  # DEBUG TODO remove
+        #raise Exception  # DEBUG TODO remove
 
     return retd
 
@@ -132,14 +132,13 @@ def get_all_sub_keys(r_key_handle, r_key_name):
 
     recursion_level = 1  # keep recursion issues at bay... maybe
 
-    def get_sub_key_list(key_handle, key_name):
+    def get_sub_key_list(key_handle, key_name, recursion_level):
         """
         Creates a list of all subkeys of a key (and their values). Uses instances of Key and KeyValue
         :param key_handle: An established winreg registry key handle.
         :param key_name: The string name of the key.
         :return: None (appends to retd)`
         """
-        global recursion_level
 
         if recursion_level > 512:
             raise RecursionError(
@@ -169,12 +168,14 @@ def get_all_sub_keys(r_key_handle, r_key_name):
 
             try:
                 recursion_level += 1
-                get_sub_key_list(wreg.OpenKey(key_handle, reg2), key_location)
+                get_sub_key_list(wreg.OpenKey(key_handle, reg2), key_location, recursion_level)
+                recursion_level -= 1
             except WindowsError:
                 retd['errors'].append(WindowsError('Permissions error trying to access key: {}'.format(key_location)))
                 recursion_level -= 1
+        retd['data'] = _key_list
 
-    get_sub_key_list(r_key_handle, r_key_name)
+    get_sub_key_list(r_key_handle, r_key_name, recursion_level)
 
     return retd
 
@@ -213,7 +214,6 @@ def get_registry_image(machine, hklm, hku, hkcu, hkcc, hkcr, label=''):
         target_ip = '\\\\{}'.format(str(machine.last_ip))  # Winreg expects the format '\\<hostname>|<ip>' or None
     else:
         raise Exception("No acceptable connection data was given.")
-
 
     # DRY enumeration for each HKEY TODO: Handle failed connection errors.
     def enum_registry(hkey_root):
